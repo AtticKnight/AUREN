@@ -226,11 +226,36 @@ def compute_risk(payload: PortfolioRequest):
     # Worst historical drawdown periods
     historical_worst = worst_periods(pr)
 
+    # Compute series data for interactive charts
+    # 1. Normalized asset price series & cumulative portfolio return series
+    norm_prices = (prices / prices.iloc[0] * 100).round(2)
+    cum_ret = ((1 + pr).cumprod() * 100).round(2)
+    
+    # 2. Drawdown series
+    val = (1 + pr).cumprod()
+    dd_series = (val / val.cummax() - 1).round(4)
+
+    # Convert timestamps to string format YYYY-MM-DD
+    dates = [d.strftime("%Y-%m-%d") for d in prices.index]
+
+    price_series = {col: norm_prices[col].tolist() for col in norm_prices.columns}
+    price_series["Portfolio"] = cum_ret.tolist()
+
+    corr_matrix = {
+        "columns": list(corr.columns),
+        "data": [[round(float(val), 2) for val in row] for row in corr.values]
+    }
+
     return {
         "score": score,
         "level": level,
         "normalized_weights": {k: round(v, 4) for k, v in w.to_dict().items()},
         "reasons": [why for _, why in hits],
+        "hits": hits,
+        "dates": dates,
+        "price_series": price_series,
+        "drawdown_series": dd_series.tolist(),
+        "correlation_matrix": corr_matrix,
         "concentration": {
             "top_asset": conc["top_asset"],
             "top_weight": round(conc["top_weight"], 4),
