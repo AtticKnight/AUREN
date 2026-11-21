@@ -50,12 +50,24 @@ app = FastAPI(
 )
 
 # CORS setup for frontend / web integrations
+# Note: When allow_credentials=True, browsers reject wildcard allow_origins=["*"] in CORS specifications.
+# We set allow_origin_regex and explicit origins, plus expose headers, to guarantee zero CORS issues from Vercel.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "https://aurenfrontend-five.vercel.app",
+        "https://auren-api-8yrq.onrender.com",
+        "http://localhost:3000",
+        "http://localhost:8000",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:8000",
+    ],
+    allow_origin_regex=r"^https://.*\.vercel\.app$",
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allow_headers=["*"],
+    expose_headers=["*"],
+    max_age=600,
 )
 
 
