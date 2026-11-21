@@ -45,7 +45,11 @@ const usd = (v) => `${v < 0 ? "−" : ""}$${Math.round(Math.abs(v)).toLocaleStri
 const signed = (v, d = 1) => `${v > 0 ? "+" : v < 0 ? "−" : ""}${Math.abs(v * 100).toFixed(d)}%`;
 const levelClass = (l) => ({ Low: "ok", Medium: "warn", High: "danger" }[l] || "muted");
 const badge = (l) => `<span class="badge ${levelClass(l)}">${esc(l)} risk</span>`;
-const base = () => ($("api-base-url").value.trim().replace(/\/+$/, "") || DEFAULT_API);
+const base = () => {
+  const input = $("api-base-url");
+  const val = input ? input.value.trim().replace(/\/+$/, "") : "";
+  return val || localStorage.getItem("auren_api_url") || DEFAULT_API;
+};
 const getSize = () => Math.max(100, parseFloat($("portfolio-value").value) || 10000);
 const sum = (o) => Object.values(o).reduce((a, b) => a + b, 0);
 
@@ -108,6 +112,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       ctx.restore();
     },
   });
+
+  const savedUrl = localStorage.getItem("auren_api_url");
+  if (savedUrl && $("api-base-url")) {
+    $("api-base-url").value = savedUrl;
+  }
+  if ($("api-base-url")) {
+    $("api-base-url").addEventListener("change", (e) => {
+      const v = e.target.value.trim().replace(/\/+$/, "");
+      if (v) localStorage.setItem("auren_api_url", v);
+    });
+  }
 
   bindEvents();
   loadPreset(DEFAULT_PRESET);
@@ -594,7 +609,9 @@ async function generateReport() {
   box.innerHTML = '<p class="muted-text">Writing the report from your risk metrics…</p>';
   notice.hidden = true;
   try {
-    const d = await api("/report", { method: "POST", body: { metrics: analysis }, timeout: 90000 });
+    // Strip large timeseries/chart arrays to keep request payload compact and avoid TPM rate limit errors
+    const { price_series, drawdown_series, dates, ...compactMetrics } = analysis || {};
+    const d = await api("/report", { method: "POST", body: { metrics: compactMetrics }, timeout: 90000 });
     lastReport = d.report || "";
     box.innerHTML = mdToHtml(lastReport);
     $("btn-dl").hidden = false;
