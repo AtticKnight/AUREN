@@ -146,6 +146,7 @@ def _normalize_and_validate_weights(weights: Dict[str, float]) -> pd.Series:
     return w / w.sum()
 
 
+from fastapi.responses import RedirectResponse
 from starlette.staticfiles import StaticFiles
 
 # Mount static files if frontend directory exists
@@ -156,6 +157,8 @@ if os.path.isdir(FRONTEND_DIR):
 
 @app.get("/", tags=["Health & Info"])
 def root():
+    if os.path.isdir(FRONTEND_DIR):
+        return RedirectResponse(url="/app/")
     return {
         "name": "AUREN Risk API",
         "version": "1.0.0",
