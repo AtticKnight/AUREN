@@ -146,7 +146,13 @@ def _normalize_and_validate_weights(weights: Dict[str, float]) -> pd.Series:
     return w / w.sum()
 
 
-# --- Endpoints ---
+from starlette.staticfiles import StaticFiles
+
+# Mount static files if frontend directory exists
+FRONTEND_DIR = os.path.join(os.path.dirname(__file__), "frontend")
+if os.path.isdir(FRONTEND_DIR):
+    app.mount("/app", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")
+
 
 @app.get("/", tags=["Health & Info"])
 def root():
@@ -154,6 +160,7 @@ def root():
         "name": "AUREN Risk API",
         "version": "1.0.0",
         "status": "online",
+        "frontend": "/app/",
         "docs": "/docs",
         "redoc": "/redoc",
         "disclaimer": "Analytics only, not investment advice. Past data does not predict the future.",

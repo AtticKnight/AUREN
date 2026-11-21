@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AUREN · See the risk before it sees you</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Header / Navigation -->
+  <header class="navbar">
+    <div class="nav-container">
+      <div class="brand">
+        <span class="ring">◐</span>
+        <span class="wordmark">AUREN</span>
+        <span class="tagline">· RISK ANALYTICS</span>
+      </div>
+      <div class="backend-status">
+        <span id="api-status-dot" class="dot checking"></span>
+        <span id="api-status-text">Connecting to Render...</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout-container">
+    <!-- Sidebar: Portfolio Builder & Wallet -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h2>Portfolio Builder</h2>
+        <p>Define asset weights or import on-chain Base wallet</p>
+      </div>
+
+      <!-- Tab Switcher -->
+      <div class="sidebar-tabs">
+        <button id="tab-custom" class="tab-btn active" onclick="switchSidebarTab('custom')">Custom Assets</button>
+        <button id="tab-wallet" class="tab-btn" onclick="switchSidebarTab('wallet')">Base Wallet</button>
+      </div>
+
+      <!-- Custom Assets Tab Panel -->
+      <div id="panel-custom" class="tab-panel active">
+        <div class="preset-section">
+          <label class="control-label">Quick Presets</label>
+          <div class="preset-pills">
+            <button class="pill" onclick="applyPreset('tech')">Big Tech</button>
+            <button class="pill" onclick="applyPreset('ai')">Semis & AI</button>
+            <button class="pill" onclick="applyPreset('balanced')">Balanced 60/40</button>
+            <button class="pill" onclick="applyPreset('concentrated')">NVDA Heavy</button>
+          </div>
+        </div>
+
+        <div class="assets-list-header">
+          <span>Assets & Weights</span>
+          <button class="btn-text" onclick="addAssetRow()">+ Add Asset</button>
+        </div>
+
+        <div id="assets-inputs" class="assets-inputs">
+          <!-- Dynamically populated rows -->
+        </div>
+
+        <div class="weight-summary">
+          <span>Total Weight:</span>
+          <span id="total-weight-display" class="mono">100%</span>
+        </div>
+      </div>
+
+      <!-- Wallet Import Tab Panel -->
+      <div id="panel-wallet" class="tab-panel">
+        <label class="control-label" for="wallet-address">Base / EVM Address</label>
+        <div class="input-group">
+          <input type="text" id="wallet-address" placeholder="0x..." spellcheck="false">
+          <button class="btn btn-secondary" onclick="importWallet()">Inspect</button>
+        </div>
+        <p class="helper-text">Scans Coinbase tokenized stock contracts on Base mainnet.</p>
+        <div id="wallet-info" class="wallet-info hidden"></div>
+      </div>
+
+      <div class="sidebar-actions">
+        <div class="form-row">
+          <label for="portfolio-value">Portfolio Value ($ USD)</label>
+          <input type="number" id="portfolio-value" value="100000" min="1000" step="5000">
+        </div>
+        <button id="btn-analyze" class="btn btn-primary" onclick="runAnalysis()">
+          <span class="btn-text">Run Risk Analysis</span>
+          <span class="spinner hidden" id="loading-spinner"></span>
+        </button>
+      </div>
+
+      <!-- API Configuration settings toggle -->
+      <div class="api-config-expander">
+        <details>
+          <summary>⚙️ API Server Settings</summary>
+          <div class="api-config-body">
+            <label for="api-base-url">Backend Endpoint</label>
+            <input type="text" id="api-base-url" value="https://auren-api-8yrq.onrender.com">
+            <button class="btn btn-small" onclick="checkBackendHealth()">Check Status</button>
+          </div>
+        </details>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Error / Alert Banner -->
+      <div id="alert-banner" class="alert hidden"></div>
+
+      <!-- Results View -->
+      <div id="results-view" class="results-view">
+        <!-- Top Metrics Row -->
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-label">Composite Risk Score</div>
+            <div id="val-score" class="metric-value gold">--</div>
+            <div id="badge-risk-level" class="badge">--</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Annualized Volatility</div>
+            <div id="val-volatility" class="metric-value">--</div>
+            <div class="metric-sub">Expected 1Y return spread</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Max Drawdown (2Y)</div>
+            <div id="val-drawdown" class="metric-value danger">--</div>
+            <div class="metric-sub">Deepest peak-to-trough drop</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Effective Assets</div>
+            <div id="val-effective-assets" class="metric-value">--</div>
+            <div id="sub-concentration" class="metric-sub">HHI: --</div>
+          </div>
+        </div>
+
+        <!-- Risk Reasons / Flags -->
+        <div class="content-section">
+          <h3 class="section-title">Risk Flags & Penalty Drivers</h3>
+          <p class="section-sub">Specific portfolio vulnerabilities detected by the rule scoring engine.</p>
+          <div id="risk-reasons-list" class="reasons-list">
+            <div class="callout muted">No portfolio analyzed yet. Add assets on the left and click "Run Risk Analysis".</div>
+          </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="charts-grid">
+          <!-- Sector Breakdown -->
+          <div class="chart-card">
+            <h4 class="chart-title">Sector Exposure</h4>
+            <div class="chart-wrapper">
+              <canvas id="sectorChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Stress Test Scenarios -->
+          <div class="chart-card">
+            <h4 class="chart-title">Hypothetical Stress Tests</h4>
+            <div class="chart-wrapper">
+              <canvas id="stressChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Correlated Assets & Liquidity Section -->
+        <div class="details-grid">
+          <!-- High Correlation Pairs -->
+          <div class="panel-card">
+            <h4 class="panel-title">Correlated Asset Pairs (ρ &gt; 0.70)</h4>
+            <p class="panel-sub">Assets that move in tandem and do not offer true diversification.</p>
+            <div id="correlation-table-container">
+              <p class="placeholder-text">Awaiting portfolio input.</p>
+            </div>
+          </div>
+
+          <!-- Liquidity & Days to Exit -->
+          <div class="panel-card">
+            <h4 class="panel-title">Liquidity & Exit Horizons (10% ADV)</h4>
+            <p class="panel-sub">Estimated trading days to liquidate each holding without causing market impact.</p>
+            <div id="liquidity-table-container">
+              <p class="placeholder-text">Awaiting portfolio input.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI Analyst Commentary -->
+        <div class="content-section ai-report-section">
+          <div class="ai-header">
+            <div>
+              <h3 class="section-title">AI Risk Analyst Breakdown</h3>
+              <p class="section-sub">Factual assessment powered by Groq and Llama/GPT-OSS models.</p>
+            </div>
+            <button id="btn-ai-report" class="btn btn-secondary" onclick="generateAiReport()">
+              <span id="ai-btn-text">Generate AI Report</span>
+              <span class="spinner hidden" id="ai-spinner"></span>
+            </button>
+          </div>
+          <div id="ai-report-body" class="ai-report-box">
+            <p class="muted">Click "Generate AI Report" after running analysis to query the LLM risk analyst.</p>
+          </div>
+        </div>
+
+        <!-- Disclaimer Footer -->
+        <footer class="app-footer">
+          <p><strong>AUREN</strong> · Analytics only, not investment advice. Past performance and statistical correlations do not guarantee future results.</p>
+          <p class="footer-sub">Backend hosted on Render · Engine runs Python 3.11 with FastAPI</p>
+        </footer>
+      </div>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

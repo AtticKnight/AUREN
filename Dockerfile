@@ -40,6 +40,7 @@ ENV PYTHONUNBUFFERED=1 \
 COPY engine ./engine
 COPY data ./data
 COPY api.py ./api.py
+COPY frontend ./frontend
 
 # Create a non-root user for security best practices
 RUN useradd -m -u 1000 appuser && \
