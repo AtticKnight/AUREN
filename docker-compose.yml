@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   backend:
     build:
@@ -17,7 +15,7 @@ services:
       - BASE_RPC_URL=${BASE_RPC_URL:-https://mainnet.base.org}
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "https://auren-api-8yrq.onrender.com/healthz"]
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:8000/healthz"]
       interval: 30s
       timeout: 5s
       retries: 3

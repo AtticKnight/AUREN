@@ -23,6 +23,11 @@ htmlcov/
 
 # Streamlit specific
 .streamlit/
+app.py
+
+# Not needed by the API image
+scripts/
+conftest.py
 
 # Tests & Docs
 tests/

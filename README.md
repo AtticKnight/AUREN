@@ -80,6 +80,7 @@ uvicorn api:app --reload --port 8000
 ```
 - API Docs: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
 - Interactive Swagger UI to test `/risk` requests.
+- **Web frontend:** the API serves it at [http://127.0.0.1:8000/app/](http://127.0.0.1:8000/app/) (same origin, no CORS setup needed). The page auto-detects its backend: same origin when served by the API, `http://127.0.0.1:8000` when opened locally, and the Render URL when hosted on Vercel. You can override it under *Server settings* in the sidebar.
 
 ### 5. Run the Test Suite
 ```bash

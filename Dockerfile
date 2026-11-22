@@ -58,5 +58,9 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
     CMD sh -c "curl -f http://127.0.0.1:${PORT:-8000}/healthz || exit 1"
 
-# Launch Uvicorn bound to 0.0.0.0 on the port dynamically assigned by Render ($PORT)
-CMD ["sh", "-c", "uvicorn api:app --host 0.0.0.0 --port ${PORT:-8000}"]
+# Launch Uvicorn on the port Render assigns ($PORT).
+#  - exec: uvicorn becomes PID 1 so Render's SIGTERM triggers a clean shutdown
+#  - --proxy-headers / --forwarded-allow-ips: trust Render's proxy so redirects
+#    (e.g. /app -> /app/) keep https instead of downgrading to http
+#  - --timeout-keep-alive 75: stay above the proxy's idle timeout to avoid sporadic 502s
+CMD ["sh", "-c", "exec uvicorn api:app --host 0.0.0.0 --port ${PORT:-8000} --proxy-headers --forwarded-allow-ips='*' --timeout-keep-alive 75"]

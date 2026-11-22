@@ -6,7 +6,17 @@
 // ------------------------------------------------------------------ Constants
 const C = { gold: "#D6B25E", muted: "#8E9199", line: "#232329", text: "#EDEBE6", danger: "#E5786F", ok: "#6FCF97", warn: "#E0A458", bg: "#0A0A0C" };
 const GREYS = ["#5B5F68", "#7A7F88", "#A3A7AF", "#C9CCD2", "#E1E3E6", "#44474F"];
-const DEFAULT_API = "https://auren-api-8yrq.onrender.com";
+const RENDER_API = "https://auren-api-8yrq.onrender.com";
+// Pick the backend automatically so the page works everywhere:
+//  - served by the API itself (/app/)      -> same origin
+//  - opened locally (file:// or localhost)  -> local uvicorn on port 8000
+//  - anywhere else (e.g. Vercel)            -> the Render deployment
+const SERVED_BY_API = location.pathname.startsWith("/app");
+const DEFAULT_API = (() => {
+  if (SERVED_BY_API) return location.origin;
+  if (location.protocol === "file:" || ["localhost", "127.0.0.1"].includes(location.hostname)) return "http://127.0.0.1:8000";
+  return RENDER_API;
+})();
 
 const PRESETS = {
   "Balanced Tech & Crypto (Default)": [["NVDA", 40], ["MSFT", 30], ["GOOGL", 20], ["ETH-USD", 10]],
@@ -113,14 +123,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     },
   });
 
-  const savedUrl = localStorage.getItem("auren_api_url");
-  if (savedUrl && $("api-base-url")) {
-    $("api-base-url").value = savedUrl;
+  const urlInput = $("api-base-url");
+  if (urlInput) {
+    // A saved override is ignored when the page is served by the API itself.
+    const saved = SERVED_BY_API ? null : localStorage.getItem("auren_api_url");
+    urlInput.value = saved || DEFAULT_API;
   }
   if ($("api-base-url")) {
     $("api-base-url").addEventListener("change", (e) => {
       const v = e.target.value.trim().replace(/\/+$/, "");
-      if (v) localStorage.setItem("auren_api_url", v);
+      if (v && !SERVED_BY_API) localStorage.setItem("auren_api_url", v);
     });
   }
 
@@ -268,6 +280,7 @@ async function importWallet() {
     $("assets-inputs").innerHTML = "";
     entries.forEach(([t, w]) => addRow("assets-inputs", t, (w * 100).toFixed(1), onHoldingsEdit));
     $("preset-select").value = "Custom / Edited";
+    if (d.total_value > 0) $("portfolio-value").value = Math.max(100, Math.round(d.total_value));
     renderWalletTable(d.holdings || []);
     walletMsg("success", `Loaded ${entries.length} tokenized stock${entries.length > 1 ? "s" : ""}.`);
     runAnalysis();
@@ -500,10 +513,14 @@ function renderLiquidity(liq) {
     note.className = "callout muted"; note.textContent = "Liquidity data isn't available right now. Run the analysis again to retry.";
     return;
   }
-  const worst = liq.assets.reduce((m, a) => (a.days_to_exit > m.days_to_exit ? a : m), liq.assets[0]);
-  $("l-max").textContent = `${liq.max_days_to_exit.toFixed(2)} days`;
+  const worst = liq.assets.reduce((m, a) => ((a.days_to_exit ?? -1) > (m.days_to_exit ?? -1) ? a : m), liq.assets[0]);
+  $("l-max").textContent = `${(liq.max_days_to_exit ?? 0).toFixed(2)} days`;
   $("l-ticker").textContent = `Slowest to sell: ${worst.ticker}`;
   body.innerHTML = liq.assets.map((a) => {
+    if (a.days_to_exit == null) {
+      return `<tr><td><strong>${esc(a.ticker)}</strong></td><td class="num">${usd(a.holding_value)}</td><td class="num">–</td>
+        <td class="num">–</td><td class="num">–</td><td><span class="chip warn">No volume data</span></td></tr>`;
+    }
     const d = a.days_to_exit, cls = d >= 1 ? "bad" : d >= 0.1 ? "warn" : "ok", status = d >= 1 ? "Slow (1+ days)" : d >= 0.1 ? "Liquid (under 1 day)" : "Instant (under 0.1 day)";
     return `<tr><td><strong>${esc(a.ticker)}</strong></td><td class="num">${usd(a.holding_value)}</td><td class="num">${usd(a.adv)}</td>
       <td class="num">${usd(a.adv * 0.1)}</td><td class="num"><strong>${d.toFixed(3)}</strong></td><td><span class="chip ${cls}">${status}</span></td></tr>`;
