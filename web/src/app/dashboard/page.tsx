@@ -13,6 +13,7 @@ const tabs: DashboardTab[] = [
   "correlation",
   "stress",
   "report",
+  "slides",
   "docs",
 ];
 

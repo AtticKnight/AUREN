@@ -12,6 +12,7 @@ import { ExposureView } from "@/components/views/ExposureView";
 import { CorrelationView } from "@/components/views/CorrelationView";
 import { StressView } from "@/components/views/StressView";
 import { ReportView } from "@/components/views/ReportView";
+import { SlidesView } from "@/components/views/SlidesView";
 import { DocsProofView } from "@/components/views/DocsProofView";
 import { PortfolioBuilderModal } from "@/components/modals/PortfolioBuilderModal";
 import { WalletConnectModal } from "@/components/modals/WalletConnectModal";
@@ -22,6 +23,7 @@ export type DashboardTab =
   | "correlation"
   | "stress"
   | "report"
+  | "slides"
   | "docs";
 
 export type DataStatus = "reference" | "live" | "stale";
@@ -44,6 +46,7 @@ const isDashboardTab = (value: string): value is DashboardTab =>
   value === "correlation" ||
   value === "stress" ||
   value === "report" ||
+  value === "slides" ||
   value === "docs";
 
 function errorMessage(error: unknown, fallback: string): string {
@@ -226,6 +229,7 @@ export function Workstation({
           />
         )}
         {activeTab === "report" && <ReportView data={data} />}
+        {activeTab === "slides" && <SlidesView data={data} />}
         {activeTab === "docs" && <DocsProofView data={data} />}
       </DashboardShell>
 

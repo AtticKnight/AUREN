@@ -6,6 +6,7 @@ import {
   Grid3X3,
   LayoutDashboard,
   PieChart,
+  Presentation,
   ShieldCheck,
 } from "lucide-react";
 import { cn } from "@/lib/cn";
@@ -22,6 +23,7 @@ const tabs: { id: DashboardTab; label: string; icon: typeof LayoutDashboard }[] 
   { id: "correlation", label: "Matrix", icon: Grid3X3 },
   { id: "stress", label: "Stress", icon: Activity },
   { id: "report", label: "Report", icon: FileText },
+  { id: "slides", label: "Slides", icon: Presentation },
   { id: "docs", label: "Docs", icon: ShieldCheck },
 ];
 
@@ -31,7 +33,7 @@ export function MobileTabs({ activeTab, onSelectTab }: MobileTabsProps) {
       aria-label="Mobile workstation sections"
       className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-obsidian/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md lg:hidden"
     >
-      <ul className="grid grid-cols-6">
+      <ul className="grid grid-cols-7">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const active = activeTab === tab.id;
