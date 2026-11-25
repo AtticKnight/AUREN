@@ -68,11 +68,15 @@ export function SlidesView({ data }: SlidesViewProps) {
           <div className="border border-line/50 bg-secondary/50 p-4 text-xs text-muted">
             Effective Asset Count (Neff):{" "}
             <span className="font-mono text-champagne">
-              {data.effective_assets ? data.effective_assets.toFixed(1) : "N/A"}
+              {data.concentration?.effective_assets
+                ? data.concentration.effective_assets.toFixed(1)
+                : "N/A"}
             </span>{" "}
             · HHI Concentration:{" "}
             <span className="font-mono text-champagne">
-              {data.hhi ? (data.hhi * 10000).toFixed(0) : "N/A"}
+              {data.concentration?.hhi
+                ? (data.concentration.hhi * 10000).toFixed(0)
+                : "N/A"}
             </span>
           </div>
         </div>
@@ -83,7 +87,7 @@ export function SlidesView({ data }: SlidesViewProps) {
       subtitle: "Hypothetical Shocks & Capital Preservation",
       content: (
         <div className="grid gap-4 sm:grid-cols-2">
-          {Object.entries(data.stress_tests || {}).map(([scenario, impact]) => (
+          {Object.entries(data.stress || {}).map(([scenario, impact]: [string, number]) => (
             <div key={scenario} className="flex items-center justify-between border border-line/60 bg-elevated/30 p-4">
               <span className="text-sm text-primary">{scenario}</span>
               <span
