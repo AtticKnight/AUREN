@@ -25,15 +25,20 @@ export function FinalCta() {
           Clarity in complexity.
         </h2>
         <p className="mx-auto mt-7 max-w-xl text-base leading-[1.8] text-muted sm:text-lg">
-          A deeper understanding of portfolio risk begins with AUREN.
+          Experience mathematical transparency and quantitative risk analytics built for modern institutional portfolios.
         </p>
-        <ButtonLink href="/dashboard" className="group mt-10">
-          Launch AUREN
-          <ArrowUpRight
-            aria-hidden="true"
-            className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-          />
-        </ButtonLink>
+        <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+          <ButtonLink href="/dashboard" className="group">
+            Launch Workstation
+            <ArrowUpRight
+              aria-hidden="true"
+              className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+            />
+          </ButtonLink>
+          <ButtonLink href="/dashboard?tab=docs" variant="secondary">
+            View API Docs &amp; Proof
+          </ButtonLink>
+        </div>
       </div>
     </section>
   );

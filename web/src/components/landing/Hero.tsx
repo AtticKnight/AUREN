@@ -68,8 +68,31 @@ export function Hero() {
               />
             </ButtonLink>
             <ButtonLink href="#architecture" variant="secondary">
-              Explore AUREN
+              Explore Architecture
             </ButtonLink>
+          </div>
+
+          <div className="mt-12 flex flex-wrap items-center gap-6 border-t border-line/40 pt-8 sm:gap-8">
+            <div>
+              <div className="font-mono text-xs font-semibold tracking-wider text-champagne">
+                DETERMINISTIC
+              </div>
+              <div className="text-[0.68rem] text-muted">Mathematical verification</div>
+            </div>
+            <div className="h-6 w-px bg-line/60" aria-hidden="true" />
+            <div>
+              <div className="font-mono text-xs font-semibold tracking-wider text-champagne">
+                INSTITUTIONAL
+              </div>
+              <div className="text-[0.68rem] text-muted">Equities, ETFs &amp; Crypto</div>
+            </div>
+            <div className="h-6 w-px bg-line/60" aria-hidden="true" />
+            <div>
+              <div className="font-mono text-xs font-semibold tracking-wider text-champagne">
+                REAL-TIME
+              </div>
+              <div className="text-[0.68rem] text-muted">Stress test simulations</div>
+            </div>
           </div>
         </div>
 
@@ -78,6 +101,7 @@ export function Hero() {
           style={{ animationDelay: "160ms" }}
         >
           <div className="relative mx-auto aspect-square w-full max-w-[620px]">
+            <div aria-hidden="true" className="pointer-events-none absolute -inset-2 rounded-lg bg-gold/[0.03] blur-xl" />
             <div
               aria-hidden="true"
               className="pointer-events-none absolute inset-4 border border-line/50 sm:inset-8"
