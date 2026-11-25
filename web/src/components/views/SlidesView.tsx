@@ -23,17 +23,17 @@ export function SlidesView({ data }: SlidesViewProps) {
             <span className="font-mono text-[0.62rem] uppercase tracking-wider text-muted">
               Composite Risk Score
             </span>
-            <div className="mt-3 font-display text-5xl text-champagne">
+            <div className="mt-3 font-display text-4xl text-champagne">
               {Math.round(data.score)}
-              <span className="text-xl text-faint">/100</span>
+              <span className="text-lg text-faint">/100</span>
             </div>
-            <p className="mt-2 text-xs text-muted">Tier: {data.tier}</p>
+            <p className="mt-2 text-xs text-muted">Level: {data.level}</p>
           </div>
           <div className="border border-line/60 bg-elevated/40 p-5">
             <span className="font-mono text-[0.62rem] uppercase tracking-wider text-muted">
               Annualized Volatility
             </span>
-            <div className="mt-3 font-display text-5xl text-primary">
+            <div className="mt-3 font-display text-4xl text-primary">
               {(data.volatility * 100).toFixed(1)}%
             </div>
             <p className="mt-2 text-xs text-muted">Rolling historical standard deviation</p>
@@ -42,7 +42,7 @@ export function SlidesView({ data }: SlidesViewProps) {
             <span className="font-mono text-[0.62rem] uppercase tracking-wider text-muted">
               Max Drawdown
             </span>
-            <div className="mt-3 font-display text-5xl text-negative">
+            <div className="mt-3 font-display text-4xl text-negative">
               {(data.max_drawdown * 100).toFixed(1)}%
             </div>
             <p className="mt-2 text-xs text-muted">Peak-to-trough decline</p>

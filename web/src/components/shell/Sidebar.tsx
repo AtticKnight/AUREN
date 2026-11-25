@@ -7,12 +7,20 @@ import {
   Grid3X3,
   Activity,
   FileText,
+  Presentation,
   ShieldCheck,
   ExternalLink,
   Sliders,
 } from "lucide-react";
 
-export type NavTab = "overview" | "exposure" | "correlation" | "stress" | "report" | "docs";
+export type NavTab =
+  | "overview"
+  | "exposure"
+  | "correlation"
+  | "stress"
+  | "report"
+  | "slides"
+  | "docs";
 
 interface SidebarProps {
   activeTab: NavTab;
@@ -26,6 +34,7 @@ export function Sidebar({ activeTab, onSelectTab }: SidebarProps) {
     { id: "correlation", label: "Correlation Matrix", icon: Grid3X3 },
     { id: "stress", label: "Stress & Sandbox", icon: Activity },
     { id: "report", label: "AI Verification", icon: FileText },
+    { id: "slides", label: "Slides", icon: Presentation },
     { id: "docs", label: "Proof & API Docs", icon: ShieldCheck },
   ];
 

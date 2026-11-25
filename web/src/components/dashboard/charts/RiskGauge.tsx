@@ -22,14 +22,14 @@ const levelColor: Record<RiskLevel, string> = {
 function pointAt(percent: number, radius: number) {
   const angle = Math.PI - (percent / 100) * Math.PI;
   return {
-    x: 150 + radius * Math.cos(angle),
-    y: 150 - radius * Math.sin(angle),
+    x: Number((150 + radius * Math.cos(angle)).toFixed(2)),
+    y: Number((150 - radius * Math.sin(angle)).toFixed(2)),
   };
 }
 
 export function RiskGauge({ score, level, compact = false }: RiskGaugeProps) {
   const safeScore = Math.min(100, Math.max(0, Number.isFinite(score) ? score : 0));
-  const filled = (safeScore / 100) * arcLength;
+  const filled = Number(((safeScore / 100) * arcLength).toFixed(2));
   const color = levelColor[level];
 
   return (
@@ -106,13 +106,13 @@ export function RiskGauge({ score, level, compact = false }: RiskGaugeProps) {
         })}
 
         <line x1="150" y1="150" x2="150" y2="174" stroke="#302A20" strokeWidth="1" />
-        <text x="150" y="113" textAnchor="middle" className="font-mono tabular" fontSize="54" fill="#F5F1E8">
+        <text x="150" y="113" textAnchor="middle" className="font-mono tabular" fontSize="42" fill="#F5F1E8">
           {formatNumber(safeScore, 0)}
         </text>
-        <text x="150" y="132" textAnchor="middle" className="font-mono" fontSize="10" letterSpacing="3" fill="#77736C">
+        <text x="150" y="132" textAnchor="middle" className="font-mono" fontSize="9" letterSpacing="2.5" fill="#77736C">
           / 100
         </text>
-        <text x="150" y="168" textAnchor="middle" className="font-mono" fontSize="11" letterSpacing="2" fill={color}>
+        <text x="150" y="168" textAnchor="middle" className="font-mono" fontSize="10" letterSpacing="1.8" fill={color}>
           {level.toUpperCase()} RISK
         </text>
       </svg>

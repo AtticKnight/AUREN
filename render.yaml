@@ -19,3 +19,17 @@ services:
         sync: false
       - key: BASE_RPC_URL
         value: https://mainnet.base.org
+
+  - type: web
+    name: auren-web
+    runtime: node
+    plan: free
+    region: oregon
+    rootDir: web
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: NEXT_PUBLIC_API_URL
+        value: https://auren-api-8yrq.onrender.com

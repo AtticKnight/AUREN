@@ -9,6 +9,7 @@ import { ExposureView } from "@/components/views/ExposureView";
 import { CorrelationView } from "@/components/views/CorrelationView";
 import { StressView } from "@/components/views/StressView";
 import { ReportView } from "@/components/views/ReportView";
+import { SlidesView } from "@/components/views/SlidesView";
 import { DocsProofView } from "@/components/views/DocsProofView";
 import { PortfolioBuilderModal } from "@/components/modals/PortfolioBuilderModal";
 import { useParams } from "next/navigation";
@@ -34,6 +35,7 @@ export default function PortfolioDetailPage() {
       {activeTab === "correlation" && <CorrelationView data={BASE_PORTFOLIO_ANALYSIS} />}
       {activeTab === "stress" && <StressView data={BASE_PORTFOLIO_ANALYSIS} />}
       {activeTab === "report" && <ReportView data={BASE_PORTFOLIO_ANALYSIS} />}
+      {activeTab === "slides" && <SlidesView data={BASE_PORTFOLIO_ANALYSIS} />}
       {activeTab === "docs" && <DocsProofView />}
 
       <PortfolioBuilderModal
