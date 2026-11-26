@@ -13,7 +13,7 @@ import {
   YAxis,
 } from "recharts";
 import { Activity, TrendingDown } from "lucide-react";
-import { formatPercent, formatShortDate, formatSignedPercent } from "@/lib/format";
+import { formatPercent, formatShortDate } from "@/lib/format";
 import { EmptyState } from "@/components/ui/States";
 import type { RiskAnalysis } from "@/lib/types";
 
@@ -27,12 +27,13 @@ type ChartPoint = {
   Drawdown: number | null;
 } & Record<string, string | number | null>;
 
-const seriesColors = ["#A39D90", "#7FA8A0", "#C49BC8", "#D48A6A", "#8FA6D4"];
+// Institutional muted complementary colors
+const seriesColors = ["#7B8794", "#4E937A", "#B78652", "#9C6ADE", "#5275B7"];
 
 const axisStyle = {
   fontSize: 10,
   fontFamily: "var(--font-mono)",
-  fill: "#77736C",
+  fill: "#636B75",
 };
 
 export function HistoricalCharts({ analysis }: HistoricalChartsProps) {
@@ -71,36 +72,36 @@ export function HistoricalCharts({ analysis }: HistoricalChartsProps) {
   }
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       <section aria-labelledby="performance-chart-title">
-        <div className="flex flex-wrap items-start justify-between gap-3 border-b border-line/70 pb-3">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line pb-3">
           <div>
             <h3
               id="performance-chart-title"
-              className="flex items-center gap-2 font-display text-xl text-primary"
+              className="flex items-center gap-2 font-sans text-sm font-semibold text-primary"
             >
               <Activity aria-hidden="true" className="h-4 w-4 text-gold" />
-              Rebased performance
+              Rebased Price Performance (Base 100)
             </h3>
-            <p className="mt-1 text-xs text-muted">
-              Portfolio path and supplied comparison series, rebased to 100 at the start of the window.
+            <p className="mt-0.5 text-xs text-muted">
+              Portfolio normalized against underlying constituent assets over the observation window.
             </p>
           </div>
-          <span className="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-faint">
-            {chartData.length} plotted observations
+          <span className="font-mono text-[0.65rem] text-muted">
+            {chartData.length} observations
           </span>
         </div>
 
-        <div className="mt-4 h-72 w-full min-w-0" role="img" aria-label="Line chart of rebased portfolio and constituent price series over time">
+        <div className="mt-4 h-72 w-full min-w-0" role="img" aria-label="Line chart of rebased portfolio performance">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={chartData} margin={{ top: 8, right: 12, left: -12, bottom: 0 }}>
-              <CartesianGrid stroke="rgba(234,203,131,0.08)" strokeDasharray="3 4" vertical={false} />
+              <CartesianGrid stroke="#272B30" strokeDasharray="3 4" vertical={false} />
               <XAxis
                 dataKey="date"
                 tick={axisStyle}
                 tickFormatter={(value: unknown) => formatShortDate(String(value))}
                 minTickGap={36}
-                axisLine={{ stroke: "#302A20" }}
+                axisLine={{ stroke: "#272B30" }}
                 tickLine={false}
               />
               <YAxis
@@ -108,14 +109,14 @@ export function HistoricalCharts({ analysis }: HistoricalChartsProps) {
                 domain={["auto", "auto"]}
                 axisLine={false}
                 tickLine={false}
-                width={46}
+                width={44}
               />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: "#141311",
-                  border: "1px solid #302A20",
-                  borderRadius: 0,
-                  color: "#F5F1E8",
+                  backgroundColor: "#14171B",
+                  border: "1px solid #272B30",
+                  borderRadius: "8px",
+                  color: "#F4F2ED",
                   fontFamily: "var(--font-mono)",
                   fontSize: 11,
                 }}
@@ -129,7 +130,7 @@ export function HistoricalCharts({ analysis }: HistoricalChartsProps) {
                   name={key}
                   stroke={seriesColors[index % seriesColors.length]}
                   strokeWidth={1.2}
-                  strokeOpacity={0.5}
+                  strokeOpacity={0.45}
                   dot={false}
                   isAnimationActive={false}
                   connectNulls
@@ -139,8 +140,8 @@ export function HistoricalCharts({ analysis }: HistoricalChartsProps) {
                 type="monotone"
                 dataKey="Portfolio"
                 name="Portfolio"
-                stroke="#EACB83"
-                strokeWidth={2.5}
+                stroke="#D6B56D"
+                strokeWidth={2.2}
                 dot={false}
                 isAnimationActive={false}
                 connectNulls
@@ -149,16 +150,16 @@ export function HistoricalCharts({ analysis }: HistoricalChartsProps) {
           </ResponsiveContainer>
         </div>
 
-        <ul className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-[0.66rem] text-muted">
+        <ul className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-xs text-muted">
           <li className="inline-flex items-center gap-2">
-            <span aria-hidden="true" className="h-[2px] w-5 bg-champagne" />
-            Portfolio
+            <span aria-hidden="true" className="h-2 w-2 rounded-full bg-gold" />
+            <span className="font-semibold text-primary">Portfolio</span>
           </li>
           {comparisonKeys.map((key, index) => (
-            <li key={key} className="inline-flex items-center gap-2">
+            <li key={key} className="inline-flex items-center gap-1.5 font-mono text-[0.68rem]">
               <span
                 aria-hidden="true"
-                className="h-[2px] w-5"
+                className="h-1.5 w-1.5 rounded-full"
                 style={{ backgroundColor: seriesColors[index % seriesColors.length] }}
               />
               {key}
@@ -167,79 +168,74 @@ export function HistoricalCharts({ analysis }: HistoricalChartsProps) {
         </ul>
       </section>
 
-      <div className="auren-hairline" />
+      <div className="border-t border-line" />
 
       <section aria-labelledby="drawdown-chart-title">
-        <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line pb-3">
           <div>
             <h3
               id="drawdown-chart-title"
-              className="flex items-center gap-2 font-display text-xl text-primary"
+              className="flex items-center gap-2 font-sans text-sm font-semibold text-primary"
             >
               <TrendingDown aria-hidden="true" className="h-4 w-4 text-negative" />
-              Underwater profile
+              Underwater Profile (% From High-Water Mark)
             </h3>
-            <p className="mt-1 text-xs text-muted">
-              Distance below prior portfolio highs, from the supplied drawdown series.
+            <p className="mt-0.5 text-xs text-muted">
+              Running historical peak-to-trough equity degradation.
             </p>
           </div>
-          <span className="font-mono text-[0.62rem] text-negative tabular">
-            Max {formatPercent(analysis.max_drawdown)}
+          <span className="font-mono text-xs font-semibold text-negative">
+            Max Drawdown {formatPercent(analysis.max_drawdown)}
           </span>
         </div>
 
         {hasDrawdown ? (
-          <div className="mt-4 h-52 w-full min-w-0" role="img" aria-label="Area chart of portfolio drawdown over time">
+          <div className="mt-4 h-48 w-full min-w-0" role="img" aria-label="Area chart of portfolio drawdown over time">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={chartData} margin={{ top: 8, right: 12, left: -12, bottom: 0 }}>
-                <CartesianGrid stroke="rgba(234,203,131,0.08)" strokeDasharray="3 4" vertical={false} />
+                <CartesianGrid stroke="#272B30" strokeDasharray="3 4" vertical={false} />
                 <XAxis
                   dataKey="date"
                   tick={axisStyle}
                   tickFormatter={(value: unknown) => formatShortDate(String(value))}
                   minTickGap={36}
-                  axisLine={{ stroke: "#302A20" }}
+                  axisLine={{ stroke: "#272B30" }}
                   tickLine={false}
                 />
                 <YAxis
                   tick={axisStyle}
-                  tickFormatter={(value: unknown) => `${Number(value).toFixed(0)}%`}
+                  domain={["dataMin", 0]}
                   axisLine={false}
                   tickLine={false}
-                  width={46}
+                  width={44}
+                  tickFormatter={(val: unknown) => `${Math.round(Number(val))}%`}
                 />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: "#141311",
-                    border: "1px solid #302A20",
-                    borderRadius: 0,
-                    color: "#F5F1E8",
+                    backgroundColor: "#14171B",
+                    border: "1px solid #272B30",
+                    borderRadius: "8px",
+                    color: "#F4F2ED",
                     fontFamily: "var(--font-mono)",
                     fontSize: 11,
                   }}
+                  formatter={(val: unknown) => [`${Number(val).toFixed(2)}%`, "Drawdown"]}
                   labelFormatter={(value: unknown) => formatShortDate(String(value))}
-                  formatter={(value: unknown) => [
-                    formatSignedPercent(typeof value === "number" ? value / 100 : null),
-                    "Drawdown",
-                  ]}
                 />
                 <Area
                   type="monotone"
                   dataKey="Drawdown"
-                  name="Drawdown"
-                  stroke="#F87171"
-                  fill="rgba(248,113,113,0.12)"
-                  strokeWidth={1.8}
+                  stroke="#D46B6B"
+                  strokeWidth={1.5}
+                  fill="#D46B6B"
+                  fillOpacity={0.12}
                   isAnimationActive={false}
-                  connectNulls
                 />
               </AreaChart>
             </ResponsiveContainer>
           </div>
         ) : (
-          <p className="mt-4 border border-line bg-obsidian/60 px-4 py-3 text-xs text-muted">
-            No drawdown series was supplied for this analysis.
-          </p>
+          <p className="py-4 text-xs text-muted">No drawdown history detected.</p>
         )}
       </section>
     </div>

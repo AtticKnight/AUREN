@@ -29,7 +29,7 @@ export default function PortfolioDetailPage() {
       onOpenWalletModal={() => setBuilderModalOpen(true)}
     >
       {activeTab === "overview" && (
-        <OverviewView data={BASE_PORTFOLIO_ANALYSIS} onNavigateTab={setActiveTab} />
+        <OverviewView data={BASE_PORTFOLIO_ANALYSIS} onNavigateTab={setActiveTab as any} />
       )}
       {activeTab === "exposure" && <ExposureView data={BASE_PORTFOLIO_ANALYSIS} />}
       {activeTab === "correlation" && <CorrelationView data={BASE_PORTFOLIO_ANALYSIS} />}

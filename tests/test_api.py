@@ -1,5 +1,5 @@
 from fastapi.testclient import TestClient
-from api import app
+from backend.app.main import app
 
 client = TestClient(app)
 
@@ -71,7 +71,7 @@ def test_risk_mixed_stock_and_crypto_is_json_safe_and_aligned(monkeypatch):
     drop them so the JSON is valid and every chart series matches `dates`."""
     import numpy as np
     import pandas as pd
-    import api as api_module
+    import backend.app.main as api_module
 
     idx = pd.date_range("2025-01-01", periods=120, freq="D")  # includes weekends
     rng = np.random.default_rng(0)
@@ -95,7 +95,7 @@ def test_risk_mixed_stock_and_crypto_is_json_safe_and_aligned(monkeypatch):
 
 
 def test_wallet_endpoint_shape(monkeypatch):
-    import api as api_module
+    import backend.app.main as api_module
 
     rows = [{"token": "NVDAc", "ticker": "NVDA", "address": "0x1", "tokens": 2.0, "shares": 2.0,
              "price": 100.0, "value": 200.0, "supported": True, "nav_updated": None}]

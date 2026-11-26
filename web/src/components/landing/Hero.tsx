@@ -1,136 +1,155 @@
 "use client";
 
-import dynamic from "next/dynamic";
-import { ArrowDown, ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, ShieldCheck, Activity, BarChart2, Layers } from "lucide-react";
 import { ButtonLink } from "@/components/ui/Button";
-import { storyState } from "@/lib/story";
-
-const ArchitectureCanvas = dynamic(
-  () => import("@/components/three/ArchitectureCanvas"),
-  {
-    ssr: false,
-    loading: () => <div className="h-full w-full" aria-hidden="true" />,
-  }
-);
 
 export function Hero() {
   return (
     <section
       aria-labelledby="hero-heading"
-      onPointerMove={(event) => {
-        const rect = event.currentTarget.getBoundingClientRect();
-        if (!rect.width || !rect.height) return;
-        storyState.mouseX = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-        storyState.mouseY = -(((event.clientY - rect.top) / rect.height) * 2 - 1);
-      }}
-      onPointerLeave={() => {
-        storyState.mouseX = 0;
-        storyState.mouseY = 0;
-      }}
-      className="relative isolate flex min-h-[100svh] items-center overflow-hidden border-b border-line/40 bg-obsidian pt-16"
+      className="relative isolate border-b border-line bg-obsidian pt-24 pb-16 lg:pt-32 lg:pb-24"
     >
-      <div
-        aria-hidden="true"
-        className="auren-grid auren-grid-fade pointer-events-none absolute inset-0 opacity-70"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -right-40 top-1/4 h-[38rem] w-[38rem] rounded-full bg-gold/[0.07] blur-[140px]"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -left-52 bottom-0 h-[26rem] w-[26rem] rounded-full bg-champagne/[0.03] blur-[120px]"
-      />
+      <div className="mx-auto max-w-[1400px] px-5 sm:px-8 lg:px-12">
+        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[1.1fr_0.9fr]">
+          {/* Left Column: Value Proposition */}
+          <div className="max-w-2xl">
+            <div className="inline-flex items-center gap-2 rounded-full border border-line bg-secondary px-3 py-1 font-mono text-[0.65rem] font-medium tracking-wider text-gold">
+              <span className="h-1.5 w-1.5 rounded-full bg-gold" />
+              INSTITUTIONAL RISK ANALYTICS
+            </div>
 
-      <div className="relative mx-auto grid w-full max-w-[1400px] grid-cols-1 items-center gap-14 px-5 py-20 sm:px-8 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:gap-6 lg:px-12 lg:py-28">
-        <div className="auren-enter max-w-2xl">
-          <p className="auren-eyebrow">PORTFOLIO RISK INTELLIGENCE</p>
-          <div aria-hidden="true" className="auren-hairline mt-7 w-24" />
-          <h1
-            id="hero-heading"
-            className="auren-display mt-8 text-[clamp(3.25rem,7vw,6.75rem)] text-primary"
-          >
-            Risk has layers.
-            <br />
-            <span className="auren-gold-text">See them all.</span>
-          </h1>
-          <p className="mt-8 max-w-xl text-base leading-[1.8] text-muted sm:text-lg">
-            Uncover the hidden architecture of your portfolio. Understand
-            exposure, correlation, and financial risk with transparent,
-            quantitative intelligence.
-          </p>
-          <div className="mt-10 flex flex-wrap items-center gap-4">
-            <ButtonLink href="/dashboard" className="group">
-              Analyze Your Portfolio
-              <ArrowUpRight
-                aria-hidden="true"
-                className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-              />
-            </ButtonLink>
-            <ButtonLink href="#architecture" variant="secondary">
-              Explore Architecture
-            </ButtonLink>
+            <h1
+              id="hero-heading"
+              className="mt-6 font-sans text-4xl font-bold tracking-tight text-primary sm:text-5xl lg:text-6xl"
+            >
+              Precision risk intelligence for modern portfolios.
+            </h1>
+
+            <p className="mt-6 max-w-xl text-base leading-relaxed text-muted sm:text-lg">
+              Institutional-grade risk decomposition, correlation modeling, and deterministic stress testing for equities, digital assets, and multi-asset funds.
+            </p>
+
+            <div className="mt-8 flex flex-wrap items-center gap-3">
+              <ButtonLink href="/dashboard" className="px-5 py-2.5 text-xs font-semibold">
+                Launch Workstation
+                <ArrowUpRight aria-hidden="true" className="h-4 w-4" />
+              </ButtonLink>
+              <ButtonLink href="/dashboard?tab=docs" variant="secondary" className="px-5 py-2.5 text-xs">
+                Methodology &amp; API Docs
+              </ButtonLink>
+            </div>
+
+            <div className="mt-12 grid grid-cols-3 gap-6 border-t border-line pt-8">
+              <div>
+                <p className="font-mono text-xs font-semibold text-gold">DETERMINISTIC</p>
+                <p className="mt-1 text-xs text-muted">Audited, transparent math</p>
+              </div>
+              <div>
+                <p className="font-mono text-xs font-semibold text-gold">MULTI-ASSET</p>
+                <p className="mt-1 text-xs text-muted">Equities, ETFs &amp; Crypto</p>
+              </div>
+              <div>
+                <p className="font-mono text-xs font-semibold text-gold">REAL-TIME</p>
+                <p className="mt-1 text-xs text-muted">Instant shock simulation</p>
+              </div>
+            </div>
           </div>
 
-          <div className="mt-12 flex flex-wrap items-center gap-6 border-t border-line/40 pt-8 sm:gap-8">
-            <div>
-              <div className="font-mono text-xs font-semibold tracking-wider text-champagne">
-                DETERMINISTIC
+          {/* Right Column: Clean Institutional Terminal Preview */}
+          <div className="relative">
+            <div className="rounded-xl border border-line bg-secondary p-5 shadow-2xl">
+              <div className="flex items-center justify-between border-b border-line pb-3">
+                <div className="flex items-center gap-2">
+                  <span className="h-2.5 w-2.5 rounded-full bg-line" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-line" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-line" />
+                  <span className="ml-2 font-mono text-[0.68rem] font-medium text-muted">
+                    PORTFOLIO_ENGINE // MAINNET
+                  </span>
+                </div>
+                <span className="rounded bg-positive/10 px-2 py-0.5 font-mono text-[0.62rem] font-semibold text-positive">
+                  ENGINE ONLINE
+                </span>
               </div>
-              <div className="text-[0.68rem] text-muted">Mathematical verification</div>
-            </div>
-            <div className="h-6 w-px bg-line/60" aria-hidden="true" />
-            <div>
-              <div className="font-mono text-xs font-semibold tracking-wider text-champagne">
-                INSTITUTIONAL
+
+              {/* Terminal Stats Grid */}
+              <div className="mt-4 grid grid-cols-2 gap-3">
+                <div className="rounded-lg border border-line bg-elevated p-4">
+                  <div className="flex items-center justify-between text-muted">
+                    <span className="font-mono text-[0.65rem] uppercase tracking-wider">Risk Score</span>
+                    <Activity className="h-3.5 w-3.5 text-gold" />
+                  </div>
+                  <div className="mt-2 flex items-baseline gap-2">
+                    <span className="font-mono text-3xl font-bold text-primary">64</span>
+                    <span className="font-mono text-xs text-muted">/100</span>
+                  </div>
+                  <span className="mt-2 inline-block rounded bg-gold/15 px-1.5 py-0.5 font-mono text-[0.6rem] font-semibold text-gold">
+                    MODERATE RISK
+                  </span>
+                </div>
+
+                <div className="rounded-lg border border-line bg-elevated p-4">
+                  <div className="flex items-center justify-between text-muted">
+                    <span className="font-mono text-[0.65rem] uppercase tracking-wider">Ann. Volatility</span>
+                    <BarChart2 className="h-3.5 w-3.5 text-gold" />
+                  </div>
+                  <div className="mt-2">
+                    <span className="font-mono text-3xl font-bold text-primary">18.4%</span>
+                  </div>
+                  <span className="mt-2 inline-block font-mono text-[0.65rem] text-muted">
+                    Rolling 252d window
+                  </span>
+                </div>
+
+                <div className="rounded-lg border border-line bg-elevated p-4">
+                  <div className="flex items-center justify-between text-muted">
+                    <span className="font-mono text-[0.65rem] uppercase tracking-wider">Max Drawdown</span>
+                    <Layers className="h-3.5 w-3.5 text-negative" />
+                  </div>
+                  <div className="mt-2">
+                    <span className="font-mono text-3xl font-bold text-negative">-21.8%</span>
+                  </div>
+                  <span className="mt-2 inline-block font-mono text-[0.65rem] text-muted">
+                    Peak-to-trough decline
+                  </span>
+                </div>
+
+                <div className="rounded-lg border border-line bg-elevated p-4">
+                  <div className="flex items-center justify-between text-muted">
+                    <span className="font-mono text-[0.65rem] uppercase tracking-wider">HHI / Neff</span>
+                    <ShieldCheck className="h-3.5 w-3.5 text-positive" />
+                  </div>
+                  <div className="mt-2 flex items-baseline gap-2">
+                    <span className="font-mono text-3xl font-bold text-primary">4.2</span>
+                    <span className="font-mono text-xs text-muted">eff. assets</span>
+                  </div>
+                  <span className="mt-2 inline-block font-mono text-[0.65rem] text-muted">
+                    HHI: 0.238
+                  </span>
+                </div>
               </div>
-              <div className="text-[0.68rem] text-muted">Equities, ETFs &amp; Crypto</div>
-            </div>
-            <div className="h-6 w-px bg-line/60" aria-hidden="true" />
-            <div>
-              <div className="font-mono text-xs font-semibold tracking-wider text-champagne">
-                REAL-TIME
+
+              {/* Stress Simulation Strip */}
+              <div className="mt-3 rounded-lg border border-line bg-elevated p-3">
+                <span className="font-mono text-[0.65rem] uppercase tracking-wider text-muted">
+                  Historical Shock Simulation
+                </span>
+                <div className="mt-2 flex items-center justify-between text-xs">
+                  <span className="text-muted">2008 Financial Crisis</span>
+                  <span className="font-mono font-semibold text-negative">-28.4%</span>
+                </div>
+                <div className="mt-1 flex items-center justify-between text-xs">
+                  <span className="text-muted">2020 COVID Liquidity Shock</span>
+                  <span className="font-mono font-semibold text-negative">-16.2%</span>
+                </div>
+                <div className="mt-1 flex items-center justify-between text-xs">
+                  <span className="text-muted">2022 Tech Selloff</span>
+                  <span className="font-mono font-semibold text-negative">-14.7%</span>
+                </div>
               </div>
-              <div className="text-[0.68rem] text-muted">Stress test simulations</div>
             </div>
           </div>
         </div>
-
-        <div
-          className="auren-enter relative min-w-0"
-          style={{ animationDelay: "160ms" }}
-        >
-          <div className="relative mx-auto aspect-square w-full max-w-[620px]">
-            <div aria-hidden="true" className="pointer-events-none absolute -inset-2 rounded-lg bg-gold/[0.03] blur-xl" />
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-4 border border-line/50 sm:inset-8"
-            />
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute left-4 top-4 h-6 w-6 border-l border-t border-gold/50 sm:left-8 sm:top-8"
-            />
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute bottom-4 right-4 h-6 w-6 border-b border-r border-gold/50 sm:bottom-8 sm:right-8"
-            />
-            <ArchitectureCanvas variant="hero" active className="h-full w-full" />
-          </div>
-          <p className="mt-4 text-center font-mono text-[0.58rem] uppercase tracking-[0.22em] text-faint">
-            Illustrative visualization — not portfolio data
-          </p>
-        </div>
-      </div>
-
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute bottom-7 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2"
-      >
-        <span className="font-mono text-[0.55rem] uppercase tracking-[0.3em] text-faint">
-          Scroll
-        </span>
-        <span className="h-8 w-px bg-gradient-to-b from-gold/60 to-transparent" />
-        <ArrowDown className="h-3 w-3 text-faint" />
       </div>
     </section>
   );

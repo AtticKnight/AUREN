@@ -1,8 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Activity, AlertCircle, ArrowRight, RotateCcw, SlidersHorizontal } from "lucide-react";
-import { formatNumber, formatPercent, formatSignedPercent } from "@/lib/format";
+import { Activity, RotateCcw } from "lucide-react";
+import { formatPercent } from "@/lib/format";
 import { cn } from "@/lib/cn";
 import type { RiskAnalysis } from "@/lib/types";
 import type { SimulationComparison } from "@/components/dashboard/Workstation";
@@ -67,223 +67,157 @@ export function StressView({
   const result = comparison?.result ?? null;
 
   return (
-    <div className="space-y-7">
-      <header className="flex flex-col gap-5 border-b border-line pb-6 xl:flex-row xl:items-end xl:justify-between">
-        <div className="min-w-0">
-          <p className="auren-eyebrow">Portfolio intelligence / Stress</p>
-          <h1 className="mt-3 font-display text-4xl leading-none text-primary sm:text-5xl">
-            Stress & scenarios
+    <div className="space-y-6">
+      <div className="flex flex-col gap-4 rounded-xl border border-line bg-secondary p-5 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="font-sans text-xl font-bold tracking-tight text-primary sm:text-2xl">
+            Stress Testing &amp; What-If Simulation
           </h1>
-          <p className="mt-3 max-w-3xl text-sm leading-relaxed text-muted">
-            Hypothetical shock responses under the current weight vector. These scenarios are model
-            inputs applied to the portfolio, not replays of historical market events.
+          <p className="mt-1 text-xs text-muted">
+            Hypothetical scenario stress testing and real-time portfolio reweighting sandbox.
           </p>
         </div>
-        <div className="flex flex-wrap gap-3">
+        <div className="flex items-center gap-3">
           <RiskBadge level={data.level} score={data.score} />
           {worstScenario && (
-            <span className="border border-negative/30 bg-negative/5 px-2.5 py-1 font-mono text-[0.62rem] uppercase tracking-[0.14em] text-negative">
-              Worst model: {worstScenario[0]} {formatPercent(worstScenario[1])}
+            <span className="rounded border border-negative/30 bg-negative/10 px-2.5 py-1 font-mono text-xs font-semibold text-negative">
+              Worst Shock: {worstScenario[0]} ({formatPercent(worstScenario[1])})
             </span>
           )}
         </div>
-      </header>
+      </div>
 
-      <div className="grid grid-cols-1 gap-5 xl:grid-cols-12">
-        <Panel className="xl:col-span-7">
+      {/* Scenario Bars and Explanation */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+        <Panel className="lg:col-span-7">
           <PanelHeader
-            eyebrow="Shock response"
-            title="Scenario impacts"
-            action={<Activity aria-hidden="true" className="h-4 w-4 text-gold" />}
+            eyebrow="SCENARIO SHOCK IMPACT"
+            title="Macro Crisis Simulation"
+            action={<Activity className="h-4 w-4 text-gold" />}
           />
-          <div className="p-5 sm:p-6">
+          <div className="p-5">
             <ScenarioBars stress={data.stress} />
           </div>
         </Panel>
 
-        <Panel className="xl:col-span-5">
-          <PanelHeader eyebrow="Model definition" title="How to read this" />
-          <div className="space-y-4 p-5 sm:p-6 text-xs leading-relaxed text-muted">
+        <Panel className="lg:col-span-5">
+          <PanelHeader eyebrow="METHODOLOGY" title="Deterministic Shocks" />
+          <div className="p-5 space-y-4 text-xs text-muted leading-relaxed">
             <p>
-              Each bar applies a deterministic percentage shock to the assets in the current
-              portfolio and aggregates the result using the same normalized weights shown in the
-              sandbox.
-            </p>
-            <p>
-              The scenarios are intentionally hypothetical. They test sensitivity; they do not
-              forecast returns or reproduce a specific historical crisis.
+              Each scenario represents a predetermined market factor shock applied directly across current portfolio weights.
             </p>
             {worstScenario && (
-              <div className="border-l-2 border-negative/60 pl-4">
-                <p className="auren-eyebrow">Most severe input</p>
-                <p className="mt-2 text-primary">{worstScenario[0]}</p>
-                <p className="mt-1 font-mono text-xl text-negative tabular">
+              <div className="rounded-lg border border-negative/30 bg-negative/5 p-4">
+                <span className="font-mono text-[0.65rem] font-semibold uppercase tracking-wider text-negative">
+                  Maximum Modeled Loss
+                </span>
+                <p className="mt-1 text-sm font-semibold text-primary">{worstScenario[0]}</p>
+                <p className="mt-1 font-mono text-2xl font-bold text-negative">
                   {formatPercent(worstScenario[1])}
                 </p>
               </div>
             )}
+            <p className="text-[0.68rem]">
+              Simulations test structural portfolio vulnerabilities and correlation breakdowns rather than forecasting price paths.
+            </p>
           </div>
         </Panel>
       </div>
 
+      {/* What-If Sandbox */}
       <Panel>
         <PanelHeader
-          eyebrow="Live recalculation"
-          title="What-if sandbox"
+          eyebrow="WHAT-IF REWEIGHTING"
+          title="Interactive Weight Sandbox"
           action={
             <div className="flex items-center gap-3">
               <span
-                aria-live="polite"
                 className={cn(
-                  "font-mono text-[0.62rem] uppercase tracking-[0.14em] tabular",
-                  normalizedTotal ? "text-positive" : "text-champagne"
+                  "font-mono text-xs font-semibold",
+                  normalizedTotal ? "text-positive" : "text-gold"
                 )}
               >
-                Total {formatPercent(total)}
+                Sum: {formatPercent(total)}
               </span>
-              <Button variant="ghost" onClick={reset} disabled={isSimulating} className="px-3 py-1.5">
-                <RotateCcw aria-hidden="true" className="h-3 w-3" />
+              <Button variant="ghost" onClick={reset} disabled={isSimulating} className="h-8 px-2.5 text-xs">
+                <RotateCcw className="h-3 w-3 mr-1" />
                 Reset
               </Button>
             </div>
           }
         />
-        <div className="p-5 sm:p-6">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="p-5">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {Object.entries(weights).map(([ticker, weight]) => {
               const percent = Math.round(weight * 100);
               return (
-                <div key={ticker} className="border border-line bg-obsidian/50 px-4 py-4">
-                  <div className="flex items-center justify-between gap-3">
-                    <label
-                      htmlFor={`stress-${ticker}`}
-                      className="font-mono text-xs uppercase tracking-[0.14em] text-primary"
-                    >
+                <div key={ticker} className="rounded-lg border border-line bg-elevated p-3.5">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="font-mono text-xs font-bold uppercase text-primary">
                       {ticker}
-                    </label>
-                    <span className="font-mono text-xs text-champagne tabular">{percent}%</span>
+                    </span>
+                    <span className="font-mono text-xs font-semibold text-gold">
+                      {percent}%
+                    </span>
                   </div>
                   <input
-                    id={`stress-${ticker}`}
                     type="range"
-                    min={0}
-                    max={100}
-                    step={1}
+                    min="0"
+                    max="100"
                     value={percent}
-                    onChange={(event) => updateWeight(ticker, Number(event.target.value))}
+                    onChange={(e) => updateWeight(ticker, Number(e.target.value))}
                     disabled={isSimulating}
-                    className="mt-4 w-full accent-[#D4AF37]"
+                    className="w-full accent-gold h-1.5 bg-[#272B30] rounded-lg cursor-pointer"
                   />
                 </div>
               );
             })}
           </div>
 
-          {error && (
-            <div role="alert" className="mt-5 flex items-start gap-2 border border-negative/30 bg-negative/5 px-4 py-3 text-xs leading-relaxed text-primary">
-              <AlertCircle aria-hidden="true" className="mt-0.5 h-3.5 w-3.5 shrink-0 text-negative" />
-              {error}
+          <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-t border-line pt-4">
+            <span className="text-xs text-muted">
+              Adjust weights to recalculate risk scores, factor concentrations, and shock scenarios.
+            </span>
+            <Button
+              onClick={runSimulation}
+              disabled={!normalizedTotal || isSimulating}
+              className="px-5 py-2 font-semibold text-xs"
+            >
+              {isSimulating ? "Recalculating..." : "Execute Recalculation"}
+            </Button>
+          </div>
+
+          {/* Simulation Comparison if Available */}
+          {result && (
+            <div className="mt-6 rounded-lg border border-line bg-secondary p-4">
+              <span className="font-mono text-xs font-semibold uppercase tracking-wider text-gold">
+                Sandbox Recalculation Result
+              </span>
+              <div className="mt-3 grid grid-cols-3 gap-4">
+                <div>
+                  <span className="text-xs text-muted">Risk Score</span>
+                  <div className="mt-1 flex items-baseline gap-2">
+                    <span className="font-mono text-xl font-bold text-primary">{Math.round(result.score)}</span>
+                    <span className="font-mono text-xs text-muted">vs {Math.round(baseline.score)}</span>
+                  </div>
+                </div>
+                <div>
+                  <span className="text-xs text-muted">Volatility</span>
+                  <div className="mt-1">
+                    <span className="font-mono text-xl font-bold text-primary">{formatPercent(result.volatility)}</span>
+                  </div>
+                </div>
+                <div>
+                  <span className="text-xs text-muted">Effective Assets</span>
+                  <div className="mt-1">
+                    <span className="font-mono text-xl font-bold text-primary">{result.concentration.effective_assets.toFixed(1)}</span>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
-
-          <div className="mt-6 flex flex-col gap-3 border-t border-line pt-5 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-xs leading-relaxed text-muted">
-              {onSimulate
-                ? normalizedTotal
-                  ? "Weights sum to 100%. Recalculation calls the risk engine and replaces the displayed analysis."
-                  : "Adjust weights until the total is 100% before recalculating."
-                : "Simulation controls are read-only in this embedded view."}
-            </p>
-            {onSimulate && (
-              <Button
-                variant="primary"
-                onClick={runSimulation}
-                disabled={!normalizedTotal || isSimulating}
-              >
-                <SlidersHorizontal aria-hidden="true" className="h-3.5 w-3.5" />
-                {isSimulating ? "Recalculating..." : "Recalculate risk"}
-                <ArrowRight aria-hidden="true" className="h-3.5 w-3.5" />
-              </Button>
-            )}
-          </div>
         </div>
       </Panel>
-
-      {comparison && result && (
-        <Panel>
-          <PanelHeader
-            eyebrow="Before / after"
-            title="Simulation comparison"
-            action={
-              <span className="font-mono text-[0.6rem] uppercase tracking-[0.14em] text-faint">
-                Engine recalculated
-              </span>
-            }
-          />
-          <div className="p-5 sm:p-6">
-            <div className="grid grid-cols-1 gap-px border border-line bg-line sm:grid-cols-2 xl:grid-cols-4">
-              <div className="bg-secondary px-4 py-4">
-                <p className="font-mono text-[0.58rem] uppercase tracking-[0.16em] text-faint">Score</p>
-                <p className="mt-2 font-mono text-xl text-primary tabular">
-                  {formatNumber(baseline.score, 0)}
-                  <span className="mx-2 text-faint">→</span>
-                  <span className="text-champagne">{formatNumber(result.score, 0)}</span>
-                </p>
-              </div>
-              <div className="bg-secondary px-4 py-4">
-                <p className="font-mono text-[0.58rem] uppercase tracking-[0.16em] text-faint">Risk level</p>
-                <p className="mt-2 text-sm text-primary">
-                  {baseline.level}
-                  <span className="mx-2 text-faint">→</span>
-                  <span className="text-champagne">{result.level}</span>
-                </p>
-              </div>
-              <div className="bg-secondary px-4 py-4">
-                <p className="font-mono text-[0.58rem] uppercase tracking-[0.16em] text-faint">Volatility</p>
-                <p className="mt-2 font-mono text-sm tabular">
-                  {formatPercent(baseline.volatility)}
-                  <span className="mx-2 text-faint">→</span>
-                  <span className="text-champagne">{formatPercent(result.volatility)}</span>
-                </p>
-              </div>
-              <div className="bg-secondary px-4 py-4">
-                <p className="font-mono text-[0.58rem] uppercase tracking-[0.16em] text-faint">Max drawdown</p>
-                <p className="mt-2 font-mono text-sm tabular">
-                  {formatSignedPercent(baseline.max_drawdown)}
-                  <span className="mx-2 text-faint">→</span>
-                  <span className="text-champagne">{formatSignedPercent(result.max_drawdown)}</span>
-                </p>
-              </div>
-            </div>
-
-            <div className="mt-5 grid grid-cols-1 gap-5 lg:grid-cols-2">
-              <div>
-                <p className="auren-eyebrow mb-3">Baseline scenarios</p>
-                <ScenarioBars stress={baseline.stress} />
-              </div>
-              <div>
-                <p className="auren-eyebrow mb-3">Recalculated scenarios</p>
-                <ScenarioBars stress={result.stress} />
-              </div>
-            </div>
-
-            <div className="mt-5 flex flex-wrap gap-2">
-              {Object.entries(comparison.weights).map(([ticker, weight]) => (
-                <span
-                  key={ticker}
-                  className="border border-line bg-secondary px-2 py-1 font-mono text-[0.62rem] text-muted"
-                >
-                  {ticker} {formatPercent(weight)}
-                </span>
-              ))}
-            </div>
-          </div>
-        </Panel>
-      )}
-
-      <p className="border-l-2 border-gold/50 pl-3 text-xs leading-relaxed text-faint">
-        {data.disclaimer}
-      </p>
     </div>
   );
 }

@@ -1,25 +1,49 @@
 import type { Metadata } from "next";
 import { Workstation } from "@/components/dashboard/Workstation";
-import type { DashboardTab } from "@/components/dashboard/Workstation";
+import type { NavItemKey } from "@/lib/navigationTypes";
 
 export const metadata: Metadata = {
   title: "Workstation",
   description: "AUREN portfolio risk intelligence workstation.",
 };
 
-const tabs: DashboardTab[] = [
+const ALL_TABS: NavItemKey[] = [
   "overview",
-  "exposure",
-  "correlation",
-  "stress",
-  "report",
-  "slides",
-  "docs",
+  "dashboard",
+  "portfolio",
+  "risk-analysis",
+  "market-overview",
+  "risk-metrics",
+  "asset-allocation",
+  "correlation-analysis",
+  "volatility",
+  "historical-performance",
+  "stress-testing",
+  "watchlist",
+  "saved-portfolios",
+  "reports",
+  "settings",
+  "help-support",
 ];
 
-function parseTab(value: string | string[] | undefined): DashboardTab {
-  if (typeof value === "string" && tabs.includes(value as DashboardTab)) {
-    return value as DashboardTab;
+// Mapping for backwards compatibility with legacy tabs
+const LEGACY_MAP: Record<string, NavItemKey> = {
+  exposure: "asset-allocation",
+  correlation: "correlation-analysis",
+  stress: "stress-testing",
+  report: "reports",
+  slides: "reports",
+  docs: "help-support",
+};
+
+function parseTab(value: string | string[] | undefined): NavItemKey {
+  if (typeof value === "string") {
+    if (ALL_TABS.includes(value as NavItemKey)) {
+      return value as NavItemKey;
+    }
+    if (LEGACY_MAP[value]) {
+      return LEGACY_MAP[value];
+    }
   }
   return "overview";
 }

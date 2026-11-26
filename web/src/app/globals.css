@@ -1,39 +1,41 @@
 @import "tailwindcss";
 
 @theme {
-  --color-obsidian: #080808;
-  --color-secondary: #10100F;
-  --color-surface: #141311;
-  --color-elevated: #1C1A17;
-  --color-line: #302A20;
-  --color-gold: #D4AF37;
-  --color-champagne: #EACB83;
-  --color-highlight: #F5DFA0;
-  --color-primary: #F5F1E8;
-  --color-muted: #A39D90;
-  --color-faint: #77736C;
-  --color-positive: #34D399;
-  --color-negative: #F87171;
+  --color-obsidian: #0B0D0F;
+  --color-secondary: #14171B;
+  --color-surface: #14171B;
+  --color-elevated: #191D22;
+  --color-line: #272B30;
+  --color-gold: #D6B56D;
+  --color-champagne: #D6B56D;
+  --color-gold-dark: #C49A45;
+  --color-highlight: #E8D8AE;
+  --color-primary: #F4F2ED;
+  --color-muted: #9299A3;
+  --color-faint: #636B75;
+  --color-positive: #36A879;
+  --color-negative: #D46B6B;
 
-  --font-display: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
-  --font-sans: var(--font-geist), "Geist", "Inter", system-ui, sans-serif;
+  --font-display: var(--font-geist), "Inter", system-ui, sans-serif;
+  --font-sans: var(--font-geist), "Inter", system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), "Geist Mono", ui-monospace, monospace;
 }
 
 :root {
-  --obsidian: #080808;
-  --secondary: #10100F;
-  --surface: #141311;
-  --elevated: #1C1A17;
-  --line: #302A20;
-  --gold: #D4AF37;
-  --champagne: #EACB83;
-  --highlight: #F5DFA0;
-  --primary: #F5F1E8;
-  --muted: #A39D90;
-  --faint: #77736C;
-  --positive: #34D399;
-  --negative: #F87171;
+  --obsidian: #0B0D0F;
+  --secondary: #14171B;
+  --surface: #14171B;
+  --elevated: #191D22;
+  --line: #272B30;
+  --gold: #D6B56D;
+  --champagne: #D6B56D;
+  --gold-dark: #C49A45;
+  --highlight: #E8D8AE;
+  --primary: #F4F2ED;
+  --muted: #9299A3;
+  --faint: #636B75;
+  --positive: #36A879;
+  --negative: #D46B6B;
 }
 
 * {
@@ -58,14 +60,14 @@ body {
 }
 
 ::selection {
-  background: rgba(212, 175, 55, 0.24);
+  background: rgba(214, 181, 109, 0.2);
   color: var(--highlight);
 }
 
 *:focus-visible {
-  outline: 2px solid var(--champagne);
-  outline-offset: 3px;
-  border-radius: 2px;
+  outline: 1.5px solid var(--gold);
+  outline-offset: 2px;
+  border-radius: 8px;
 }
 
 button,
@@ -81,12 +83,12 @@ button {
 
 button:disabled {
   cursor: not-allowed;
-  opacity: 0.5;
+  opacity: 0.45;
 }
 
 ::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -94,12 +96,12 @@ button:disabled {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #2b261e;
+  background: #272B30;
   border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #4a3d26;
+  background: #383E46;
 }
 
 .tabular,
@@ -111,55 +113,46 @@ button:disabled {
 }
 
 .auren-display {
-  font-family: var(--font-display);
-  font-weight: 400;
-  letter-spacing: -0.035em;
-  line-height: 0.92;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
 }
 
 .auren-eyebrow {
   font-family: var(--font-mono);
   font-size: 0.625rem;
-  letter-spacing: 0.28em;
+  font-weight: 600;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--champagne);
+  color: var(--gold);
 }
 
-.auren-grid {
-  background-image: radial-gradient(rgba(234, 203, 131, 0.16) 0.6px, transparent 0.6px);
-  background-size: 28px 28px;
+.auren-card {
+  background: #14171B;
+  border: 1px solid #272B30;
+  border-radius: 10px;
+  position: relative;
+  transition: border-color 0.2s ease;
 }
 
-.auren-grid-fade {
-  mask-image: radial-gradient(ellipse at center, black 10%, transparent 72%);
-  -webkit-mask-image: radial-gradient(ellipse at center, black 10%, transparent 72%);
+.auren-card:hover {
+  border-color: #383E46;
 }
 
 .auren-panel {
-  background: linear-gradient(145deg, rgba(28, 26, 23, 0.92), rgba(16, 16, 15, 0.94));
-  border: 1px solid rgba(48, 42, 32, 0.9);
-  border-radius: 2px;
-  position: relative;
-}
-
-.auren-panel::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(120deg, rgba(234, 203, 131, 0.035), transparent 38%);
+  background: #14171B;
+  border: 1px solid #272B30;
+  border-radius: 10px;
 }
 
 .auren-hairline {
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.42), transparent);
+  background: #272B30;
 }
 
 .auren-gold-text {
-  background: linear-gradient(180deg, var(--highlight), var(--gold) 58%, #a78025);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: #D6B56D;
 }
 
 .auren-scrollbar-none {
@@ -168,45 +161,6 @@ button:disabled {
 
 .auren-scrollbar-none::-webkit-scrollbar {
   display: none;
-}
-
-@keyframes auren-rise {
-  from {
-    opacity: 0;
-    transform: translateY(18px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes auren-breathe {
-  0%,
-  100% {
-    opacity: 0.35;
-  }
-  50% {
-    opacity: 0.75;
-  }
-}
-
-@keyframes auren-spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.auren-enter {
-  animation: auren-rise 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-.auren-breathe {
-  animation: auren-breathe 5s ease-in-out infinite;
-}
-
-.auren-spin {
-  animation: auren-spin 0.9s linear infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {

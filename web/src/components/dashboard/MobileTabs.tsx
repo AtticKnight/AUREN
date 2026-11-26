@@ -1,39 +1,35 @@
 "use client";
 
 import {
-  Activity,
-  FileText,
-  Grid3X3,
+  Compass,
   LayoutDashboard,
-  PieChart,
-  Presentation,
-  ShieldCheck,
+  ShieldAlert,
+  Globe,
+  Sliders,
 } from "lucide-react";
 import { cn } from "@/lib/cn";
-import type { DashboardTab } from "@/components/dashboard/Workstation";
+import type { NavItemKey } from "@/lib/navigationTypes";
 
 interface MobileTabsProps {
-  activeTab: DashboardTab;
-  onSelectTab: (tab: DashboardTab) => void;
+  activeTab: NavItemKey | string;
+  onSelectTab: (tab: any) => void;
 }
 
-const tabs: { id: DashboardTab; label: string; icon: typeof LayoutDashboard }[] = [
-  { id: "overview", label: "Overview", icon: LayoutDashboard },
-  { id: "exposure", label: "Exposure", icon: PieChart },
-  { id: "correlation", label: "Matrix", icon: Grid3X3 },
-  { id: "stress", label: "Stress", icon: Activity },
-  { id: "report", label: "Report", icon: FileText },
-  { id: "slides", label: "Slides", icon: Presentation },
-  { id: "docs", label: "Docs", icon: ShieldCheck },
+const tabs: { id: NavItemKey; label: string; icon: typeof Compass }[] = [
+  { id: "overview", label: "Overview", icon: Compass },
+  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { id: "risk-analysis", label: "Risk", icon: ShieldAlert },
+  { id: "market-overview", label: "Market", icon: Globe },
+  { id: "settings", label: "Settings", icon: Sliders },
 ];
 
 export function MobileTabs({ activeTab, onSelectTab }: MobileTabsProps) {
   return (
     <nav
-      aria-label="Mobile workstation sections"
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-obsidian/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md lg:hidden"
+      aria-label="Mobile quick navigation"
+      className="fixed inset-x-0 bottom-0 z-40 border-t border-[#1A1D23] bg-[#0A0C0E]/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md md:hidden"
     >
-      <ul className="grid grid-cols-7">
+      <ul className="grid grid-cols-5">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const active = activeTab === tab.id;
@@ -45,20 +41,17 @@ export function MobileTabs({ activeTab, onSelectTab }: MobileTabsProps) {
                 aria-current={active ? "page" : undefined}
                 className={cn(
                   "relative flex h-14 w-full flex-col items-center justify-center gap-1 px-0.5 transition-colors",
-                  active ? "text-highlight" : "text-faint"
+                  active ? "text-[#D6B56D]" : "text-[#7B828E]"
                 )}
               >
                 {active && (
                   <span
                     aria-hidden="true"
-                    className="absolute inset-x-2 top-0 h-[2px] bg-gold"
+                    className="absolute top-0 inset-x-3 h-0.5 rounded-full bg-[#D6B56D]"
                   />
                 )}
-                <Icon
-                  aria-hidden="true"
-                  className={cn("h-4 w-4 shrink-0", active && "text-gold")}
-                />
-                <span className="w-full truncate text-center text-[0.56rem] uppercase tracking-[0.06em]">
+                <Icon aria-hidden="true" className="h-4 w-4 shrink-0" />
+                <span className="truncate text-[0.62rem] font-medium tracking-tight">
                   {tab.label}
                 </span>
               </button>

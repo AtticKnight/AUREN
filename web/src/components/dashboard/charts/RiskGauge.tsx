@@ -14,9 +14,9 @@ const arcLength = Math.PI * 128;
 const thresholds = [0, 35, 65, 100];
 
 const levelColor: Record<RiskLevel, string> = {
-  Low: "#34D399",
-  Medium: "#D4AF37",
-  High: "#F87171",
+  Low: "#36A879",
+  Medium: "#D6B56D",
+  High: "#D46B6B",
 };
 
 function pointAt(percent: number, radius: number) {
@@ -35,52 +35,52 @@ export function RiskGauge({ score, level, compact = false }: RiskGaugeProps) {
   return (
     <div className={cn("w-full", compact && "max-w-sm")}>
       <svg
-        viewBox="0 0 300 190"
+        viewBox="0 0 300 185"
         className="w-full"
         role="img"
-        aria-label={`Risk score ${safeScore} out of 100, ${level} risk. Low 0 to 34, Medium 35 to 64, High 65 to 100.`}
+        aria-label={`Risk score ${safeScore} out of 100, ${level} risk.`}
       >
         <defs>
           <linearGradient id="auren-gauge-gradient" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="#34D399" />
-            <stop offset="55%" stopColor="#D4AF37" />
-            <stop offset="100%" stopColor="#F87171" />
+            <stop offset="0%" stopColor="#36A879" />
+            <stop offset="50%" stopColor="#D6B56D" />
+            <stop offset="100%" stopColor="#D46B6B" />
           </linearGradient>
         </defs>
 
+        {/* Track */}
         <path
           d="M 22 150 A 128 128 0 0 1 278 150"
           fill="none"
-          stroke="#302A20"
-          strokeWidth="12"
-          strokeLinecap="butt"
+          stroke="#272B30"
+          strokeWidth="10"
+          strokeLinecap="round"
         />
+
+        {/* Active Fill */}
         <path
           d="M 22 150 A 128 128 0 0 1 278 150"
           fill="none"
           stroke="url(#auren-gauge-gradient)"
-          strokeWidth="12"
-          strokeLinecap="butt"
+          strokeWidth="10"
+          strokeLinecap="round"
           strokeDasharray={`${filled} ${arcLength}`}
-          opacity="0.9"
-        />
-        <path
-          d="M 38 150 A 112 112 0 0 1 262 150"
-          fill="none"
-          stroke="rgba(234,203,131,0.16)"
-          strokeWidth="1"
-        />
-        <path
-          d="M 54 150 A 96 96 0 0 1 246 150"
-          fill="none"
-          stroke="rgba(234,203,131,0.08)"
-          strokeWidth="1"
         />
 
+        {/* Inner concentric ring */}
+        <path
+          d="M 44 150 A 106 106 0 0 1 256 150"
+          fill="none"
+          stroke="#272B30"
+          strokeWidth="1"
+          strokeDasharray="2 4"
+        />
+
+        {/* Threshold Markers */}
         {thresholds.map((threshold) => {
-          const outer = pointAt(threshold, 145);
-          const inner = pointAt(threshold, 136);
-          const label = pointAt(threshold, 160);
+          const outer = pointAt(threshold, 138);
+          const inner = pointAt(threshold, 130);
+          const label = pointAt(threshold, 150);
           return (
             <g key={threshold}>
               <line
@@ -88,16 +88,15 @@ export function RiskGauge({ score, level, compact = false }: RiskGaugeProps) {
                 y1={inner.y}
                 x2={outer.x}
                 y2={outer.y}
-                stroke={threshold === 35 || threshold === 65 ? "#EACB83" : "#77736C"}
-                strokeWidth={threshold === 35 || threshold === 65 ? 1.4 : 1}
+                stroke={threshold === 35 || threshold === 65 ? "#D6B56D" : "#636B75"}
+                strokeWidth={1.2}
               />
               <text
                 x={label.x}
                 y={label.y + 3}
                 textAnchor="middle"
-                className="font-mono"
-                fontSize="10"
-                fill="#77736C"
+                className="font-mono text-[9px]"
+                fill="#636B75"
               >
                 {threshold}
               </text>
@@ -105,20 +104,45 @@ export function RiskGauge({ score, level, compact = false }: RiskGaugeProps) {
           );
         })}
 
-        <line x1="150" y1="150" x2="150" y2="174" stroke="#302A20" strokeWidth="1" />
-        <text x="150" y="113" textAnchor="middle" className="font-mono tabular" fontSize="42" fill="#F5F1E8">
+        {/* Central Display */}
+        <text
+          x="150"
+          y="110"
+          textAnchor="middle"
+          className="font-mono tabular-nums font-bold"
+          fontSize="44"
+          fill="#F4F2ED"
+        >
           {formatNumber(safeScore, 0)}
         </text>
-        <text x="150" y="132" textAnchor="middle" className="font-mono" fontSize="9" letterSpacing="2.5" fill="#77736C">
+        <text
+          x="150"
+          y="130"
+          textAnchor="middle"
+          className="font-mono"
+          fontSize="10"
+          letterSpacing="2"
+          fill="#9299A3"
+        >
           / 100
         </text>
-        <text x="150" y="168" textAnchor="middle" className="font-mono" fontSize="10" letterSpacing="1.8" fill={color}>
+        <text
+          x="150"
+          y="168"
+          textAnchor="middle"
+          className="font-mono font-semibold"
+          fontSize="11"
+          letterSpacing="1.5"
+          fill={color}
+        >
           {level.toUpperCase()} RISK
         </text>
       </svg>
-      <p className="text-center font-mono text-[0.6rem] uppercase tracking-[0.16em] text-faint">
-        0–34 Low · 35–64 Medium · 65–100 High
-      </p>
+      <div className="mt-1 flex justify-between px-6 font-mono text-[0.62rem] text-muted">
+        <span>0–34 Low</span>
+        <span>35–64 Medium</span>
+        <span>65–100 High</span>
+      </div>
     </div>
   );
 }

@@ -32,32 +32,21 @@ interface NavItem {
   icon: LucideIcon;
 }
 
-// Section codes (01, 02, ...) are derived from order, so adding or
-// reordering items never requires renumbering by hand.
 const NAV_ITEMS: readonly NavItem[] = [
   { id: "overview", label: "Risk Overview", icon: LayoutDashboard },
-  { id: "exposure", label: "Exposure & Factor", icon: PieChart },
-  { id: "correlation", label: "Correlation Matrix", icon: Grid3X3 },
-  { id: "stress", label: "Stress & Sandbox", icon: Activity },
-  { id: "report", label: "AI Verification", icon: FileText },
-  { id: "slides", label: "Slides", icon: Presentation },
-  { id: "docs", label: "Proof & API Docs", icon: ShieldCheck },
+  { id: "asset-allocation", label: "Factor Exposure", icon: PieChart },
+  { id: "correlation-analysis", label: "Correlation Matrix", icon: Grid3X3 },
+  { id: "stress-testing", label: "Stress Testing", icon: Activity },
+  { id: "reports", label: "AI Verification", icon: FileText },
+  { id: "historical-performance", label: "Executive Deck", icon: Presentation },
+  { id: "help-support", label: "API & Proof", icon: ShieldCheck },
 ];
 
-const STATUS_COPY: Record<DataStatus, string> = {
-  reference: "Reference data",
-  live: "Live analysis",
-  stale: "Previous data",
+const STATUS_LABEL: Record<DataStatus, string> = {
+  reference: "Reference Dataset",
+  live: "Live Engine Analysis",
+  stale: "Previous Calculation",
 };
-
-const STATUS_DOT: Record<DataStatus, string> = {
-  live: "bg-positive shadow-[0_0_8px_rgba(52,211,153,0.6)]",
-  reference: "bg-muted",
-  stale: "bg-negative",
-};
-
-const focusRing =
-  "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gold/60";
 
 export function CompactSidebar({
   activeTab,
@@ -67,69 +56,59 @@ export function CompactSidebar({
   portfolioLabel,
   dataStatus,
 }: CompactSidebarProps) {
-  // Below xl the sidebar is always icon-only. At xl it follows `collapsed`.
-  // One class drives every "expanded-only" element so the logic lives in one place.
   const expandedOnly = collapsed ? "hidden" : "hidden xl:block";
-  const compactOnly = collapsed ? "block" : "block xl:hidden";
 
   return (
     <aside
       aria-label="Workstation sidebar"
       className={cn(
-        "fixed inset-y-0 left-0 z-40 hidden flex-col border-r border-line bg-secondary/95 backdrop-blur-sm lg:flex",
-        collapsed ? "w-[72px]" : "w-[72px] xl:w-[244px]"
+        "fixed inset-y-0 left-0 z-40 hidden flex-col border-r border-line bg-secondary/95 backdrop-blur-sm lg:flex transition-[width] duration-200",
+        collapsed ? "w-[68px]" : "w-[68px] xl:w-[240px]"
       )}
     >
-      {/* Header */}
+      {/* Brand Header */}
       <div
         className={cn(
-          "flex h-16 shrink-0 items-center justify-center border-b border-line px-3",
-          !collapsed && "xl:justify-between xl:px-5"
+          "flex h-14 shrink-0 items-center justify-between border-b border-line px-3.5",
+          collapsed && "justify-center px-2"
         )}
       >
-        <span className={cn("inline-flex min-w-0 items-center gap-2.5", collapsed && "xl:hidden")}>
-          <svg aria-hidden="true" viewBox="0 0 24 24" className="h-4 w-4 shrink-0 text-gold" fill="none">
-            <path d="M12 1.5 22.5 12 12 22.5 1.5 12 12 1.5Z" stroke="currentColor" strokeWidth="0.8" />
-            <path d="M12 6.4 17.6 12 12 17.6 6.4 12 12 6.4Z" fill="currentColor" />
-            <path d="M12 9.2 14.8 12 12 14.8 9.2 12 12 9.2Z" className="fill-obsidian" />
-          </svg>
+        <Link href="/" className="flex items-center gap-2.5">
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-line bg-elevated text-gold shrink-0">
+            <svg aria-hidden="true" viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+            </svg>
+          </div>
           <span
             className={cn(
-              "min-w-0 font-display text-lg uppercase leading-none tracking-[0.3em] text-primary",
+              "font-sans font-bold uppercase tracking-[0.16em] text-primary text-sm",
               expandedOnly
             )}
           >
             Auren
           </span>
-        </span>
+        </Link>
 
         <button
           type="button"
           onClick={onToggleCollapse}
           aria-label={collapsed ? "Expand navigation" : "Collapse navigation"}
-          aria-expanded={!collapsed}
           className={cn(
-            "hidden border border-line p-1.5 text-muted transition-colors hover:border-gold/50 hover:text-highlight xl:inline-flex",
-            focusRing
+            "hidden rounded-md border border-line p-1 text-muted transition-colors hover:border-gold/40 hover:text-primary xl:inline-flex",
+            collapsed && "xl:hidden"
           )}
         >
-          {collapsed ? (
-            <ChevronsRight className="h-3.5 w-3.5" aria-hidden="true" />
-          ) : (
-            <ChevronsLeft className="h-3.5 w-3.5" aria-hidden="true" />
-          )}
+          {collapsed ? <ChevronsRight className="h-3.5 w-3.5" /> : <ChevronsLeft className="h-3.5 w-3.5" />}
         </button>
       </div>
 
-      {/* Navigation */}
-      <nav
-        aria-label="Workstation sections"
-        className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto p-2 xl:p-3"
-      >
-        <p className={cn("auren-eyebrow mb-3 truncate px-2", expandedOnly)}>Sections</p>
-        <div aria-hidden="true" className={cn("mx-auto mb-3 h-px w-6 bg-line", compactOnly)} />
+      {/* Navigation List */}
+      <nav aria-label="Workstation Navigation" className="flex-1 overflow-y-auto p-2">
+        <p className={cn("px-2.5 pt-2 pb-1.5 font-mono text-[0.62rem] font-semibold uppercase tracking-wider text-muted", expandedOnly)}>
+          Analytics Modules
+        </p>
 
-        <ul className="space-y-1.5">
+        <ul className="space-y-1">
           {NAV_ITEMS.map((item, index) => {
             const Icon = item.icon;
             const active = activeTab === item.id;
@@ -141,44 +120,37 @@ export function CompactSidebar({
                   type="button"
                   onClick={() => onSelectTab(item.id)}
                   aria-current={active ? "page" : undefined}
-                  aria-label={item.label}
                   title={item.label}
                   className={cn(
-                    "group relative flex w-full items-center justify-center gap-3 border border-transparent px-2 py-3 text-left transition-colors",
+                    "group relative flex w-full items-center justify-center gap-3 rounded-lg border border-transparent px-2.5 py-2 text-left text-xs font-medium transition-colors",
                     !collapsed && "xl:justify-start xl:px-3",
-                    focusRing,
                     active
-                      ? "border-gold/25 bg-gold/[0.08] text-highlight"
-                      : "text-muted hover:border-line hover:bg-elevated/60 hover:text-primary"
+                      ? "border-line bg-elevated text-primary font-semibold"
+                      : "text-muted hover:border-line/60 hover:bg-elevated/40 hover:text-primary"
                   )}
                 >
                   <Icon
                     aria-hidden="true"
                     className={cn(
-                      "h-4 w-4 shrink-0",
-                      active ? "text-gold" : "text-faint group-hover:text-champagne"
+                      "h-4 w-4 shrink-0 transition-colors",
+                      active ? "text-gold" : "text-muted group-hover:text-primary"
                     )}
                   />
-                  <span
-                    className={cn(
-                      "min-w-0 flex-1 truncate text-[0.7rem] uppercase tracking-[0.12em]",
-                      expandedOnly
-                    )}
-                  >
+                  <span className={cn("truncate", expandedOnly)}>
                     {item.label}
                   </span>
                   <span
                     aria-hidden="true"
                     className={cn(
-                      "font-mono text-[0.58rem] tracking-[0.12em]",
+                      "ml-auto font-mono text-[0.62rem] text-muted",
                       expandedOnly,
-                      active ? "text-gold" : "text-faint"
+                      active && "text-gold"
                     )}
                   >
                     {code}
                   </span>
                   {active && (
-                    <span aria-hidden="true" className="absolute inset-y-2 left-0 w-[2px] bg-gold" />
+                    <span aria-hidden="true" className="absolute left-0 top-1.5 bottom-1.5 w-[2px] rounded-r bg-gold" />
                   )}
                 </button>
               </li>
@@ -187,45 +159,34 @@ export function CompactSidebar({
         </ul>
       </nav>
 
-      {/* Footer */}
-      <div className="shrink-0 border-t border-line p-2 xl:p-4">
-        {/* Full context box (expanded, xl+) */}
-        <div className={cn("mb-3 border border-line bg-obsidian/70 px-3 py-3", expandedOnly)}>
-          <p className="font-mono text-[0.58rem] uppercase tracking-[0.18em] text-faint">
-            Portfolio context
-          </p>
-          <p className="mt-1.5 truncate text-xs text-primary" title={portfolioLabel}>
+      {/* Footer Info / Portfolio Context */}
+      <div className="shrink-0 border-t border-line p-3">
+        <div className={cn("rounded-lg border border-line bg-elevated p-2.5", expandedOnly)}>
+          <span className="font-mono text-[0.6rem] font-semibold uppercase tracking-wider text-muted">
+            Active Context
+          </span>
+          <p className="mt-1 truncate text-xs font-semibold text-primary" title={portfolioLabel}>
             {portfolioLabel}
           </p>
-          <p
-            role="status"
-            className="mt-2 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-champagne"
-          >
-            {STATUS_COPY[dataStatus]}
-          </p>
-        </div>
-
-        {/* Compact status dot (collapsed, or below xl) */}
-        <div
-          className={cn("mb-3 justify-center py-1", collapsed ? "flex" : "flex xl:hidden")}
-          title={`Status: ${STATUS_COPY[dataStatus]}`}
-        >
-          <span aria-hidden="true" className={cn("h-2 w-2 rounded-full", STATUS_DOT[dataStatus])} />
-          <span className="sr-only">{STATUS_COPY[dataStatus]}</span>
+          <div className="mt-2 flex items-center gap-1.5 text-[0.68rem] text-gold">
+            <span className={cn(
+              "h-1.5 w-1.5 rounded-full shrink-0",
+              dataStatus === "live" ? "bg-positive" : "bg-gold"
+            )} />
+            <span className="truncate font-mono">{STATUS_LABEL[dataStatus]}</span>
+          </div>
         </div>
 
         <Link
           href="/"
-          title="Return to site"
-          aria-label="Return to site"
           className={cn(
-            "flex items-center justify-center gap-2 border border-line px-2 py-2.5 text-[0.62rem] uppercase tracking-[0.16em] text-muted transition-colors hover:border-gold/50 hover:text-highlight",
-            !collapsed && "xl:justify-start xl:px-3",
-            focusRing
+            "mt-2 flex items-center justify-center gap-2 rounded-lg border border-line px-2 py-2 text-xs font-medium text-muted transition-colors hover:border-gold/40 hover:text-primary",
+            !collapsed && "xl:justify-start xl:px-3"
           )}
+          title="Exit to home"
         >
-          <ArrowUpRight aria-hidden="true" className="h-3.5 w-3.5 shrink-0 text-gold" />
-          <span className={expandedOnly}>Return to site</span>
+          <ArrowUpRight className="h-3.5 w-3.5 shrink-0 text-gold" />
+          <span className={expandedOnly}>Return to Home</span>
         </Link>
       </div>
     </aside>

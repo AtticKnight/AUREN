@@ -33,7 +33,7 @@ export const BASE_PORTFOLIO_ANALYSIS: RiskAnalysis = {
     SPY: [100, 103, 108, 107, 112, 118, 122, 127, 125, 132, 136, 140, 139, 145],
   },
   drawdown_series: [
-    0, -0.02, -0.05, -0.12, -0.04, 0, -0.08, -0.03, -0.16, -0.06, 0, -0.04, -0.11, -0.02
+    0, -0.02, -0.05, -0.12, -0.04, 0, -0.08, -0.03, -0.16, -0.06, 0, -0.04, -0.11, -0.02,
   ],
   correlation_matrix: {
     columns: ["AAPL", "NVDA", "ETH-USD", "BTC-USD", "USDC"],
@@ -49,34 +49,29 @@ export const BASE_PORTFOLIO_ANALYSIS: RiskAnalysis = {
     top_asset: "AAPL",
     top_weight: 0.35,
     top3_weight: 0.80,
-    hhi: 0.2475,
-    effective_assets: 4.04,
+    hhi: 0.255,
+    effective_assets: 3.92,
   },
   volatility: 0.284,
   max_drawdown: -0.384,
   sector_exposure: {
     Technology: 0.60,
     Crypto: 0.35,
-    Cash: 0.05,
+    Stablecoin: 0.05,
   },
   correlated_pairs: [
     ["ETH-USD", "BTC-USD", 0.84],
     ["AAPL", "NVDA", 0.72],
-    ["NVDA", "ETH-USD", 0.45],
   ],
   stress: {
-    "2008 Financial Crisis": -0.428,
-    "2020 COVID Crash": -0.294,
-    "2022 Fed Hikes": -0.342,
-    "Crypto Winter 2022": -0.518,
-    "Tech Selloff -10%": -0.089,
-    "Yield Spike +100bps": -0.056,
+    "Broad Selloff": -0.142,
+    "Tech Crash": -0.198,
+    "Crypto Winter": -0.148,
+    "Rates Shock": -0.089,
   },
   worst_historical_periods: {
-    worst_day: -0.082,
-    worst_month: -0.214,
+    worst_day: -0.072,
+    worst_month: -0.185,
   },
-  disclaimer: "Deterministic mathematical model based on historical returns. Not investment advice.",
+  disclaimer: "Analytics only, not investment advice. Past data does not predict the future.",
 };
-
-export const MOCK_RISK_DATA = BASE_PORTFOLIO_ANALYSIS;

@@ -6,13 +6,13 @@ type Variant = "primary" | "secondary" | "ghost" | "terminal";
 
 const variants: Record<Variant, string> = {
   primary:
-    "border border-gold/70 bg-gold/10 text-highlight hover:border-champagne hover:bg-gold/20 hover:text-highlight",
+    "border border-gold/80 bg-gold text-[#0B0D0F] font-semibold hover:bg-gold-dark hover:border-gold-dark",
   secondary:
-    "border border-line bg-elevated/60 text-primary hover:border-gold/50 hover:text-highlight",
+    "border border-line bg-secondary text-primary hover:border-gold/50 hover:bg-elevated",
   ghost:
-    "border border-transparent text-muted hover:border-line hover:text-primary",
+    "border border-transparent text-muted hover:border-line hover:text-primary hover:bg-secondary/60",
   terminal:
-    "border border-line bg-secondary text-champagne hover:border-gold/60 hover:bg-elevated",
+    "border border-line bg-[#14171B] text-champagne hover:border-gold/60 hover:bg-elevated",
 };
 
 type ButtonProps = ComponentPropsWithoutRef<"button"> & {
@@ -27,7 +27,7 @@ export function Button({
   return (
     <button
       className={cn(
-        "inline-flex items-center justify-center gap-2 px-5 py-2.5 text-[0.68rem] font-medium uppercase tracking-[0.18em] transition-colors duration-300 disabled:pointer-events-none",
+        "inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-xs font-medium tracking-wide transition-colors duration-150 disabled:pointer-events-none disabled:opacity-40",
         variants[variant],
         className
       )}
@@ -48,7 +48,7 @@ export function ButtonLink({
   return (
     <Link
       className={cn(
-        "inline-flex items-center justify-center gap-2 px-5 py-2.5 text-[0.68rem] font-medium uppercase tracking-[0.18em] transition-colors duration-300",
+        "inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-xs font-medium tracking-wide transition-colors duration-150",
         variants[variant],
         className
       )}

@@ -43,7 +43,7 @@ ENV PYTHONUNBUFFERED=1 \
 # Copy application code, static assets, and data files
 COPY engine ./engine
 COPY data ./data
-COPY api.py ./api.py
+COPY backend/ ./backend/
 COPY frontend ./frontend
 
 # Create non-root user for security best practices
@@ -63,4 +63,4 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
 #  - --proxy-headers / --forwarded-allow-ips: trust Render's proxy so redirects
 #    (e.g. /app -> /app/) keep https instead of downgrading to http
 #  - --timeout-keep-alive 75: stay above the proxy's idle timeout to avoid sporadic 502s
-CMD ["sh", "-c", "exec uvicorn api:app --host 0.0.0.0 --port ${PORT:-8000} --proxy-headers --forwarded-allow-ips='*' --timeout-keep-alive 75"]
+CMD ["sh", "-c", "exec uvicorn backend.app.main:app --host 0.0.0.0 --port ${PORT:-8000} --proxy-headers --forwarded-allow-ips='*' --timeout-keep-alive 75"]

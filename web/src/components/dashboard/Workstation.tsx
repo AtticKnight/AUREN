@@ -16,16 +16,19 @@ import { SlidesView } from "@/components/views/SlidesView";
 import { DocsProofView } from "@/components/views/DocsProofView";
 import { PortfolioBuilderModal } from "@/components/modals/PortfolioBuilderModal";
 import { WalletConnectModal } from "@/components/modals/WalletConnectModal";
+import { NavigationProvider } from "@/lib/navigationContext";
+import type { NavItemKey } from "@/lib/navigationTypes";
+import {
+  RiskMetricsView,
+  MarketOverviewView,
+  VolatilityAnalysisView,
+  WatchlistView,
+  SavedPortfoliosView,
+  SettingsView,
+  HelpSupportView,
+} from "@/components/views/NavigationViews";
 
-export type DashboardTab =
-  | "overview"
-  | "exposure"
-  | "correlation"
-  | "stress"
-  | "report"
-  | "slides"
-  | "docs";
-
+export type DashboardTab = NavItemKey;
 export type DataStatus = "reference" | "live" | "stale";
 
 export interface SimulationComparison {
@@ -35,31 +38,45 @@ export interface SimulationComparison {
 }
 
 export interface WorkstationProps {
-  initialTab: DashboardTab;
+  initialTab?: NavItemKey;
   openBuilder?: boolean;
   portfolioId?: string;
 }
 
-const isDashboardTab = (value: string): value is DashboardTab =>
-  value === "overview" ||
-  value === "exposure" ||
-  value === "correlation" ||
-  value === "stress" ||
-  value === "report" ||
-  value === "slides" ||
-  value === "docs";
+const ALL_NAV_TABS: NavItemKey[] = [
+  "overview",
+  "dashboard",
+  "portfolio",
+  "risk-analysis",
+  "market-overview",
+  "risk-metrics",
+  "asset-allocation",
+  "correlation-analysis",
+  "volatility",
+  "historical-performance",
+  "stress-testing",
+  "watchlist",
+  "saved-portfolios",
+  "reports",
+  "settings",
+  "help-support",
+];
+
+function isNavTab(value: string): value is NavItemKey {
+  return ALL_NAV_TABS.includes(value as NavItemKey);
+}
 
 function errorMessage(error: unknown, fallback: string): string {
   return error instanceof Error && error.message ? error.message : fallback;
 }
 
 export function Workstation({
-  initialTab,
+  initialTab = "overview",
   openBuilder = false,
   portfolioId,
 }: WorkstationProps) {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<DashboardTab>(initialTab);
+  const [activeTab, setActiveTab] = useState<NavItemKey>(initialTab);
   const [data, setData] = useState<RiskAnalysis>(BASE_PORTFOLIO_ANALYSIS);
   const [dataStatus, setDataStatus] = useState<DataStatus>("reference");
   const [customPortfolioName, setCustomPortfolioName] = useState<string | null>(null);
@@ -75,7 +92,7 @@ export function Workstation({
     (portfolioId ? `Portfolio ${portfolioId}` : "Balanced Multi-Asset");
 
   const buildHref = useCallback(
-    (tab: DashboardTab) => {
+    (tab: NavItemKey) => {
       const params = new URLSearchParams();
       params.set("tab", tab);
       if (portfolioId) params.set("portfolio", portfolioId);
@@ -85,8 +102,8 @@ export function Workstation({
   );
 
   const selectTab = useCallback(
-    (tab: DashboardTab) => {
-      if (!isDashboardTab(tab)) return;
+    (tab: NavItemKey | string) => {
+      if (!isNavTab(tab)) return;
       setActiveTab(tab);
       router.push(buildHref(tab), { scroll: false });
     },
@@ -192,7 +209,7 @@ export function Workstation({
   }, [activeTab, buildHref, openBuilder, router]);
 
   return (
-    <>
+    <NavigationProvider defaultActive={activeTab}>
       <DashboardShell
         activeTab={activeTab}
         onSelectTab={selectTab}
@@ -208,18 +225,35 @@ export function Workstation({
         onApplyPreset={handleApplyPortfolio}
         onDismissError={() => setError(null)}
       >
-        {activeTab === "overview" && (
+        {/* MAIN Sections */}
+        {(activeTab === "overview" || activeTab === "dashboard") && (
           <OverviewView
             data={data}
             status={dataStatus}
             error={error}
             portfolioName={portfolioName}
-            onNavigateTab={selectTab}
+            onNavigateTab={selectTab as any}
           />
         )}
-        {activeTab === "exposure" && <ExposureView data={data} />}
-        {activeTab === "correlation" && <CorrelationView data={data} />}
-        {activeTab === "stress" && (
+        {activeTab === "portfolio" && <ExposureView data={data} />}
+        {activeTab === "risk-analysis" && <StressView data={data} />}
+        {activeTab === "market-overview" && <MarketOverviewView data={data} />}
+
+        {/* ANALYTICS Sections */}
+        {activeTab === "risk-metrics" && <RiskMetricsView data={data} portfolioName={portfolioName} />}
+        {activeTab === "asset-allocation" && <ExposureView data={data} />}
+        {activeTab === "correlation-analysis" && <CorrelationView data={data} />}
+        {activeTab === "volatility" && <VolatilityAnalysisView data={data} />}
+        {activeTab === "historical-performance" && (
+          <OverviewView
+            data={data}
+            status={dataStatus}
+            error={error}
+            portfolioName={portfolioName}
+            onNavigateTab={selectTab as any}
+          />
+        )}
+        {activeTab === "stress-testing" && (
           <StressView
             data={data}
             onSimulate={handleSimulate}
@@ -228,9 +262,15 @@ export function Workstation({
             error={error}
           />
         )}
-        {activeTab === "report" && <ReportView data={data} />}
-        {activeTab === "slides" && <SlidesView data={data} />}
-        {activeTab === "docs" && <DocsProofView data={data} />}
+
+        {/* WORKSPACE Sections */}
+        {activeTab === "watchlist" && <WatchlistView />}
+        {activeTab === "saved-portfolios" && <SavedPortfoliosView />}
+        {activeTab === "reports" && <ReportView data={data} />}
+
+        {/* PREFERENCES Sections */}
+        {activeTab === "settings" && <SettingsView />}
+        {activeTab === "help-support" && <HelpSupportView />}
       </DashboardShell>
 
       <PortfolioBuilderModal
@@ -248,7 +288,7 @@ export function Workstation({
         onSelectPortfolio={handleApplyPortfolio}
         hasProvider={wallet.hasProvider}
       />
-    </>
+    </NavigationProvider>
   );
 }
 

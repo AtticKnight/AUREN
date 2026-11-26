@@ -1,6 +1,6 @@
 import pytest
 from fastapi.testclient import TestClient
-from api import app, _normalize_and_validate_weights
+from backend.app.main import app, _normalize_and_validate_weights
 from engine.universe import SECTORS, GROUPS, classify_and_register_ticker
 from engine.wallet import (
     list_tokenized_stocks,
@@ -45,7 +45,7 @@ def test_crypto_aliasing_in_weights():
 
 
 def test_empty_wallet_endpoint_graceful_handling(monkeypatch):
-    import api as api_mod
+    import backend.app.main as api_mod
     monkeypatch.setattr(
         api_mod,
         "wallet_holdings",
@@ -61,7 +61,7 @@ def test_empty_wallet_endpoint_graceful_handling(monkeypatch):
 
 
 def test_wallet_with_native_eth_and_cbbtc(monkeypatch):
-    import api as api_mod
+    import backend.app.main as api_mod
     rows = [
         {
             "token": "ETH",

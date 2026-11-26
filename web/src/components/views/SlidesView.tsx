@@ -18,31 +18,33 @@ export function SlidesView({ data }: SlidesViewProps) {
       title: "Executive Summary",
       subtitle: "Institutional Portfolio Risk Overview",
       content: (
-        <div className="grid gap-6 md:grid-cols-3">
-          <div className="border border-line/60 bg-elevated/40 p-5">
-            <span className="font-mono text-[0.62rem] uppercase tracking-wider text-muted">
+        <div className="grid gap-4 sm:grid-cols-3">
+          <div className="rounded-lg border border-line bg-elevated p-5">
+            <span className="font-mono text-[0.65rem] uppercase tracking-wider text-muted">
               Composite Risk Score
             </span>
-            <div className="mt-3 font-display text-4xl text-champagne">
-              {Math.round(data.score)}
-              <span className="text-lg text-faint">/100</span>
+            <div className="mt-2 flex items-baseline gap-1">
+              <span className="font-mono text-4xl font-bold text-gold">
+                {Math.round(data.score)}
+              </span>
+              <span className="font-mono text-sm text-muted">/100</span>
             </div>
-            <p className="mt-2 text-xs text-muted">Level: {data.level}</p>
+            <p className="mt-2 text-xs text-muted">Classification: {data.level} Risk</p>
           </div>
-          <div className="border border-line/60 bg-elevated/40 p-5">
-            <span className="font-mono text-[0.62rem] uppercase tracking-wider text-muted">
+          <div className="rounded-lg border border-line bg-elevated p-5">
+            <span className="font-mono text-[0.65rem] uppercase tracking-wider text-muted">
               Annualized Volatility
             </span>
-            <div className="mt-3 font-display text-4xl text-primary">
+            <div className="mt-2 font-mono text-4xl font-bold text-primary">
               {(data.volatility * 100).toFixed(1)}%
             </div>
-            <p className="mt-2 text-xs text-muted">Rolling historical standard deviation</p>
+            <p className="mt-2 text-xs text-muted">Rolling 252-day standard deviation</p>
           </div>
-          <div className="border border-line/60 bg-elevated/40 p-5">
-            <span className="font-mono text-[0.62rem] uppercase tracking-wider text-muted">
+          <div className="rounded-lg border border-line bg-elevated p-5">
+            <span className="font-mono text-[0.65rem] uppercase tracking-wider text-muted">
               Max Drawdown
             </span>
-            <div className="mt-3 font-display text-4xl text-negative">
+            <div className="mt-2 font-mono text-4xl font-bold text-negative">
               {(data.max_drawdown * 100).toFixed(1)}%
             </div>
             <p className="mt-2 text-xs text-muted">Peak-to-trough decline</p>
@@ -52,28 +54,28 @@ export function SlidesView({ data }: SlidesViewProps) {
     },
     {
       title: "Asset Allocation & Exposure",
-      subtitle: "Portfolio Distribution by Normalized Weight",
+      subtitle: "Normalized Portfolio Distribution",
       content: (
         <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
             {Object.entries(data.normalized_weights || {}).map(([symbol, weight]) => (
-              <div key={symbol} className="border border-line/60 bg-elevated/30 p-4">
-                <span className="font-mono text-sm font-semibold text-champagne">{symbol}</span>
-                <p className="mt-2 font-display text-2xl text-primary">
+              <div key={symbol} className="rounded-lg border border-line bg-elevated p-3.5">
+                <span className="font-mono text-xs font-bold text-gold uppercase">{symbol}</span>
+                <p className="mt-1 font-mono text-xl font-bold text-primary">
                   {(weight * 100).toFixed(1)}%
                 </p>
               </div>
             ))}
           </div>
-          <div className="border border-line/50 bg-secondary/50 p-4 text-xs text-muted">
-            Effective Asset Count (Neff):{" "}
-            <span className="font-mono text-champagne">
+          <div className="rounded-lg border border-line bg-secondary p-3 text-xs text-muted">
+            Effective Diversification (Neff):{" "}
+            <span className="font-mono font-semibold text-primary">
               {data.concentration?.effective_assets
                 ? data.concentration.effective_assets.toFixed(1)
                 : "N/A"}
             </span>{" "}
-            · HHI Concentration:{" "}
-            <span className="font-mono text-champagne">
+            · HHI Index:{" "}
+            <span className="font-mono font-semibold text-primary">
               {data.concentration?.hhi
                 ? (data.concentration.hhi * 10000).toFixed(0)
                 : "N/A"}
@@ -83,15 +85,15 @@ export function SlidesView({ data }: SlidesViewProps) {
       ),
     },
     {
-      title: "Stress Testing Scenarios",
-      subtitle: "Hypothetical Shocks & Capital Preservation",
+      title: "Scenario Stress Testing",
+      subtitle: "Deterministic Macro Shock Impact",
       content: (
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-3 sm:grid-cols-2">
           {Object.entries(data.stress || {}).map(([scenario, impact]: [string, number]) => (
-            <div key={scenario} className="flex items-center justify-between border border-line/60 bg-elevated/30 p-4">
-              <span className="text-sm text-primary">{scenario}</span>
+            <div key={scenario} className="flex items-center justify-between rounded-lg border border-line bg-elevated p-3.5">
+              <span className="text-xs font-medium text-primary">{scenario}</span>
               <span
-                className={`font-mono text-base font-medium ${
+                className={`font-mono text-sm font-bold ${
                   impact <= 0 ? "text-negative" : "text-positive"
                 }`}
               >
@@ -110,44 +112,46 @@ export function SlidesView({ data }: SlidesViewProps) {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-line bg-secondary p-5">
         <div>
-          <span className="auren-eyebrow">Executive Presentation</span>
-          <h2 className="mt-2 font-display text-3xl text-primary">Portfolio Deck</h2>
+          <h1 className="font-sans text-xl font-bold tracking-tight text-primary sm:text-2xl">
+            Portfolio Deck &amp; Executive Summary
+          </h1>
+          <p className="mt-1 text-xs text-muted">
+            Clean presentation slides for investment committees and stakeholders.
+          </p>
         </div>
-        <div className="flex items-center gap-3">
-          <Button variant="secondary" onClick={() => window.print()} className="gap-2">
-            <Download className="h-3.5 w-3.5" />
-            Export / Print
-          </Button>
-        </div>
+        <Button variant="secondary" onClick={() => window.print()} className="gap-2 text-xs">
+          <Download className="h-3.5 w-3.5" />
+          Export / Print
+        </Button>
       </div>
 
-      <Panel className="relative min-h-[460px] overflow-hidden p-6 sm:p-10">
-        <div className="flex items-center justify-between border-b border-line/60 pb-6">
+      <Panel className="relative min-h-[420px] p-6 sm:p-8">
+        <div className="flex items-center justify-between border-b border-line pb-4">
           <div>
-            <span className="font-mono text-[0.62rem] uppercase tracking-widest text-gold">
+            <span className="font-mono text-[0.65rem] font-semibold uppercase tracking-wider text-gold">
               Slide {currentSlide + 1} of {slides.length}
             </span>
-            <h3 className="mt-2 font-display text-2xl text-primary sm:text-3xl">
+            <h2 className="mt-1 font-sans text-xl font-bold text-primary">
               {slides[currentSlide].title}
-            </h3>
-            <p className="mt-1 text-xs text-muted">{slides[currentSlide].subtitle}</p>
+            </h2>
+            <p className="text-xs text-muted">{slides[currentSlide].subtitle}</p>
           </div>
-          <MonitorPlay className="hidden h-6 w-6 text-gold/40 sm:block" />
+          <MonitorPlay className="hidden h-5 w-5 text-muted sm:block" />
         </div>
 
-        <div className="py-8">{slides[currentSlide].content}</div>
+        <div className="py-6">{slides[currentSlide].content}</div>
 
-        <div className="mt-8 flex items-center justify-between border-t border-line/60 pt-6">
+        <div className="mt-6 flex items-center justify-between border-t border-line pt-4">
           <div className="flex gap-2">
             {slides.map((_, idx) => (
               <button
                 key={idx}
                 type="button"
                 onClick={() => setCurrentSlide(idx)}
-                className={`h-1.5 transition-all ${
-                  idx === currentSlide ? "w-8 bg-gold" : "w-3 bg-line hover:bg-gold/40"
+                className={`h-1.5 rounded-full transition-all ${
+                  idx === currentSlide ? "w-6 bg-gold" : "w-2.5 bg-line hover:bg-muted"
                 }`}
                 aria-label={`Go to slide ${idx + 1}`}
               />
@@ -157,7 +161,7 @@ export function SlidesView({ data }: SlidesViewProps) {
             <button
               type="button"
               onClick={prev}
-              className="border border-line p-2 text-muted transition-colors hover:border-gold/50 hover:text-highlight"
+              className="rounded-lg border border-line p-2 text-muted transition-colors hover:text-primary hover:border-gold/40"
               aria-label="Previous slide"
             >
               <ChevronLeft className="h-4 w-4" />
@@ -165,7 +169,7 @@ export function SlidesView({ data }: SlidesViewProps) {
             <button
               type="button"
               onClick={next}
-              className="border border-line p-2 text-muted transition-colors hover:border-gold/50 hover:text-highlight"
+              className="rounded-lg border border-line p-2 text-muted transition-colors hover:text-primary hover:border-gold/40"
               aria-label="Next slide"
             >
               <ChevronRight className="h-4 w-4" />
