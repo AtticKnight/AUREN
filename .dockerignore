@@ -28,6 +28,8 @@ app.py
 # Not needed by the API image
 scripts/
 conftest.py
+web/
+frontend/
 
 # Tests & Docs
 tests/
